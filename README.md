@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/Algoritmo-Gen%C3%A9tico-brightgreen.svg" alt="Genetic Algorithm">
   <img src="https://img.shields.io/badge/Reinforcement-Learning-purple.svg" alt="Q-Learning">
   
-  <h1>🎰 Simulador Lotofácil Pro (Cockpit Lab V11)</h1>
+  <h1>🎰 Simulador Lotofácil Pro </h1>
   <p><i>Um ecossistema preditivo de última geração alimentado por Inteligência Artificial e Algoritmos Genéticos para encontrar padrões estatísticos de alta performance na Lotofácil.</i></p>
 </div>
 
