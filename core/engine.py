@@ -200,7 +200,15 @@ class MotorLotofacil:
                 bloqueadas = [int(x.strip()) for x in bloq_str.split(',') if x.strip().isdigit() and 1 <= int(x.strip()) <= 25]
                 fixas = [int(x.strip()) for x in fixas_str.split(',') if x.strip().isdigit() and 1 <= int(x.strip()) <= 25]
                 
-                filtros_ativos = {"impar": self.params.get("impar", False), "moldura": self.params.get("moldura", False), "primos": self.params.get("primos", False), "bloqueadas": bloqueadas}
+                filtros_ativos = {
+                    "impar": self.params.get("impar", False), 
+                    "moldura": self.params.get("moldura", False), 
+                    "primos": self.params.get("primos", False),
+                    "soma": self.params.get("soma", False),
+                    "sequencia": self.params.get("sequencia", False),
+                    "fibonacci": self.params.get("fibonacci", False),
+                    "bloqueadas": bloqueadas
+                }
                 taxa_mutacao, severidade = self.params.get("taxa_mutacao", 2) / 100.0, self.params.get("severidade", 80) / 100.0
                 mem_ativa, usar_hamming = self.params.get("memoria_ativa", True), self.params.get("filtro_hamming", False)
                 

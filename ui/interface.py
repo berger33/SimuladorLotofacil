@@ -59,6 +59,9 @@ class Aplicacao(ctk.CTk):
             "impar": self.chk_impar.get() == 1,
             "moldura": self.chk_moldura.get() == 1,
             "primos": self.chk_primos.get() == 1,
+            "soma": self.chk_soma.get() == 1,
+            "sequencia": self.chk_sequencia.get() == 1,
+            "fibonacci": self.chk_fibonacci.get() == 1,
             "taxa_mutacao": self.slider_mutacao.get(),
             "severidade": self.slider_severidade.get(),
             "memoria_ativa": self.memoria_ativa.get(),
@@ -444,6 +447,9 @@ class Aplicacao(ctk.CTk):
         self.chk_impar = ctk.CTkCheckBox(frame_dir, text="Ímpares (7 ou 8)"); self.chk_impar.pack(anchor="w", padx=10, pady=2)
         self.chk_moldura = ctk.CTkCheckBox(frame_dir, text="Moldura (9 a 11)"); self.chk_moldura.pack(anchor="w", padx=10, pady=2)
         self.chk_primos = ctk.CTkCheckBox(frame_dir, text="Primos (4 a 6)"); self.chk_primos.pack(anchor="w", padx=10, pady=2)
+        self.chk_soma = ctk.CTkCheckBox(frame_dir, text="Soma (180 a 210)"); self.chk_soma.pack(anchor="w", padx=10, pady=2)
+        self.chk_sequencia = ctk.CTkCheckBox(frame_dir, text="Sequências (Max 6)"); self.chk_sequencia.pack(anchor="w", padx=10, pady=2)
+        self.chk_fibonacci = ctk.CTkCheckBox(frame_dir, text="Fibonacci (4 a 6)"); self.chk_fibonacci.pack(anchor="w", padx=10, pady=2)
 
         ctk.CTkSwitch(frame_dir, text="Gestão de Banca (Alerta)", variable=self.gestao_banca_ativa, progress_color="#ffc107").pack(anchor="w", padx=10, pady=(10,5))
         self.entry_banca = ctk.CTkEntry(frame_dir, placeholder_text="Banca R$ (Ex: 1000)", **entry_config); self.entry_banca.pack(fill="x", padx=5)
