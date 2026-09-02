@@ -22,4 +22,4 @@ Name: "{autodesktop}\Simulador Lotofacil Pro"; Filename: "{app}\Simulador Lotofa
 Name: "desktopicon"; Description: "Criar um atalho na Área de Trabalho"; GroupDescription: "Atalhos Adicionais:"
 
 [Run]
-Filename: "{app}\Simulador Lotofacil Pro.exe"; Description: "Iniciar o Simulador Lotofacil Pro agora"; Flags: nowait postinstall skipifsilent runasoriginaluser
+Filename: "{app}\Simulador Lotofacil Pro.exe"; Description: "Iniciar o Simulador Lotofacil Pro agora"; Flags: nowait postinstall skipifsilent

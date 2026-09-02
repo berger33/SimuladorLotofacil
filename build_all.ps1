@@ -1,4 +1,4 @@
-python -m PyInstaller "Simulador Lotofacil Pro.spec" -y
+python -m PyInstaller "Simulador Lotofacil Pro.spec" -y --clean
 if ($?) {
     & "C:\Users\berge\AppData\Local\Programs\Inno Setup 6\ISCC.exe" installer.iss
     if ($?) {
