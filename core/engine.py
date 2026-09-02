@@ -236,7 +236,8 @@ class MotorLotofacil:
                     auto_piloto = acao["auto_piloto"]
                     
                     if g % 10 == 0:
-                        self.send_msg("log", f"🤖 [RL Agent] Estado: {estado_atual.upper()} | Estratégia Aplicada: {acao['nome']}\n")
+                        estado_formatado = np.round(estado_atual, 2).tolist()
+                        self.send_msg("log", f"🤖 [RL Agent] Estado (Ten, DD, H14, H15, Vol): {estado_formatado} | Estratégia Aplicada: {acao['nome']}\n")
                 else:
                     auto_piloto = self.params.get("auto_piloto", False)
                     apriori_ativo = self.params.get("apriori_ativo", False)

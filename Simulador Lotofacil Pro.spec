@@ -15,6 +15,9 @@ hiddenimports = [
     'numpy',
     'scipy',
     'requests',
+    'sklearn',
+    'sklearn.metrics',
+    'joblib',
     'PIL._tkinter_finder'
 ]
 tmp_ret = collect_all('customtkinter')
