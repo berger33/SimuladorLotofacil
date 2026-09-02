@@ -438,7 +438,7 @@ class Aplicacao(ctk.CTk):
         self.chk_autopiloto = ctk.CTkSwitch(frame_dir, text="🎯 Auto-Piloto de Filtros (XGBoost)", progress_color="#17a2b8")
         self.chk_autopiloto.pack(anchor="w", padx=10, pady=5)
         
-        self.chk_rl = ctk.CTkSwitch(frame_dir, text="🤖 IA Autônoma (Q-Learning configs)", progress_color="#8a2be2")
+        self.chk_rl = ctk.CTkSwitch(frame_dir, text="🤖 IA Autônoma (Rede Neural Profunda)", progress_color="#8a2be2")
         self.chk_rl.pack(anchor="w", padx=10, pady=(5, 15))
         
         btn_action_font = ("Segoe UI", 13)

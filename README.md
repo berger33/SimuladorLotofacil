@@ -2,7 +2,7 @@
   <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python Version">
   <img src="https://img.shields.io/badge/Machine%20Learning-XGBoost-orange.svg" alt="XGBoost">
   <img src="https://img.shields.io/badge/Algoritmo-Gen%C3%A9tico-brightgreen.svg" alt="Genetic Algorithm">
-  <img src="https://img.shields.io/badge/Reinforcement-Learning-purple.svg" alt="Q-Learning">
+  <img src="https://img.shields.io/badge/Deep-Reinforcement%20Learning-purple.svg" alt="Deep Learning (PyTorch)">
   
   <h1>🎰 Simulador Lotofácil Pro </h1>
   <p><i>Um ecossistema preditivo de última geração alimentado por Inteligência Artificial e Algoritmos Genéticos para encontrar padrões estatísticos de alta performance na Lotofácil.</i></p>
@@ -28,7 +28,7 @@ O simulador cria uma população de "jogos" (cromossomos). Aqueles que ganham me
 - **Ensemble Híbrido (XGBoost):** Árvores de decisão que cruzam Markov com Atraso para eleger o *Top 5* dezenas supremas.
 - **Mineração Apriori (Combos de Ouro):** Varre a história da loteria caçando *Trincas* que sempre saem juntas, recompensando jogos que tiverem essas combinações.
 - **Auto-Piloto de Filtros:** Um Regressor prevê o número *exato* de Ímpares, Primos, etc., para o próximo sorteio.
-- **Q-Learning (IA Autônoma):** Um Agente de Reinforcement Learning que auto-calibra a mutação e a severidade com base no que está dando mais lucro no momento!
+- **Deep Reinforcement Learning (IA Autônoma):** Uma Rede Neural Profunda (DQN) em PyTorch que lê a matriz de risco populacional e auto-calibra a mutação e a severidade em tempo real.
 
 ---
 
@@ -69,7 +69,7 @@ Para entender profundamente como usar cada chave do sistema e maximizar seus res
 - `core/genetic.py` - As leis de Crossover e Mutação.
 - `core/evaluator.py` - O Juiz. Mede o "Fitness" (Lucratividade) de cada jogo.
 - `core/ml_intelligence.py` - Todos os modelos de Machine Learning.
-- `core/rl_agent.py` - A IA autônoma Q-Learning que auto-configura o sistema.
+- `core/rl_agent.py` - A IA autônoma Baseada em Redes Neurais (Deep Q-Network) que auto-configura o sistema.
 
 ---
 
