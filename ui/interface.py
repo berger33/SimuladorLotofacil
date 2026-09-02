@@ -302,22 +302,13 @@ class Aplicacao(ctk.CTk):
 
     def obter_texto_ajuda(self, topico):
         ajudas = {
-            "intro": "👋 BEM-VINDO AO SIMULADOR LOTOFÁCIL PRO\n\nEste é um laboratório de Ciência de Dados focado em otimização genética e estatística avançada.\n\nUse o menu à esquerda para entender cada engrenagem do seu Cockpit antes de iniciar os motores.",
-            "o_que_faz": "🤖 O QUE O PROGRAMA FAZ?\n\nO sistema utiliza um Algoritmo Genético e Machine Learning para analisar todo o histórico da Caixa. Ele gera populações de matrizes, testa contra resultados passados, cruza as melhores (Crossover) e aplica mutações.",
-            "ler_log": "📊 COMO LER O LOG (RESULTADOS)\n\nCada linha mostra a evolução. \n• Top: O Lucro Médio Limpo.\n• Média: A média de todos os testes da IA. Deve ser sempre negativa (exploração).",
-            "apostas": "🎲 COMO FUNCIONAM AS APOSTAS?\n\nA máquina faz um 'Desdobramento Mutante': fatia as 20 dezenas em X jogos de 15 números (padrão 33).",
-            "regras_ouro": "⚖️ REGRAS DE OURO\n\nLoterias possuem alta variância estatística. Este software aumenta o Valor Esperado (EV), mas não prevê o futuro 100%.",
-            "iniciar": "▶ INICIAR / PAUSAR\n\nAciona ou suspende o Algoritmo Genético.",
-            "turbo": "🚀 MODO TURBO\n\nAtiva o Processamento Paralelo (Multicore).",
-            "estavel": "🛠️ MODO ESTÁVEL\n\nComuta a IA para estado Conservador. Mutação cai e Severidade sobe.",
-            "agressivo": "🔥 MODO AGRESSIVO\n\nComuta a IA para estado Exploratório (Caos).",
-            "extincao": "☄️ EXTINÇÃO EM MASSA\n\nAciona um cataclismo genético, aniquilando 90% do DNA da população.",
-            "snapshot": "📸 SNAPSHOT (BACKUP)\n\nExtrai um JSON com o DNA exato das matrizes.",
-            "mutacao": "🎛️ TAXA DE MUTAÇÃO\n\nDefine a variância percentual (0-25%) dos genes.",
-            "severidade": "⚙️ SEVERIDADE DA MEMÓRIA\n\nAplica penalidade às dezenas que resultam em ROI negativo.",
-            "hibrida": "🧠 INTELIGÊNCIA HÍBRIDA\n\nAutomatiza a fixação de anomalias baseadas em atraso.",
-            "jogos": "🎲 QTD DE JOGOS / MATRIZ ÍMÃ\n\nAltera o 'Ecossistema' em tempo real.",
-            "banca": "🏦 GESTÃO DE BANCA\n\nEstabelece a barreira de capital para o Risco de Ruína."
+            "intro": "📚 TUTORIAL DE OPERAÇÃO DO LOTOFÁCIL PRO\n\nBem-vindo ao Lotofácil Pro. A interface deste software foi inspirada no cockpit de um avião: pode parecer complexa à primeira vista, mas cada chave possui uma função estatística muito específica.\n\nEste tutorial ensinará você a dominar a máquina, compreendendo as funções isoladamente e, mais importante, como combiná-las para criar estratégias imbatíveis.",
+            "genetico": "🔬 1. ENTENDENDO O BÁSICO: O ALGORITMO GENÉTICO\n\nQuando você clica em '▶️ Iniciar Motor Híbrido', o sistema não 'gera cartelas aleatórias'. Ele faz o seguinte:\n1. Gera centenas de cartelas 'mãe'.\n2. Pega essas cartelas e joga contra todos os sorteios do histórico da Caixa (ou joga simulando contra o futuro).\n3. Corta as cartelas que deram prejuízo financeiro.\n4. Pega as que deram lucro e faz 'Crossover' (Cruzamento Genético) entre elas e aplica Mutação, gerando os 'filhos' (a próxima geração).\n5. O ciclo repete para sempre até você parar. O lucro médio vai subindo a cada geração!\n\n🎚️ Sliders de Controle:\n- Taxa de Mutação (1% a 25%): O quanto o DNA dos filhos sofrerá alterações aleatórias. Se o lucro estiver subindo devagar, aumente a mutação para dar 'choques' no sistema. Se estiver lucrando bem, diminua para estabilizar.\n- Severidade na Punição (0 a 100%): O quão dura a máquina deve ser. Em 100%, se uma dezena fez a cartela perder dinheiro, a máquina cria um ódio mortal por ela e tenta bani-la para sempre.",
+            "filtros": "🧮 2. FILTROS E FECHAMENTO (Lado Esquerdo)\n\nVocê verá diversas caixas de seleção, como Ímpares (7 a 8), Primos (4 a 6), Soma (180 a 210).\n- Se você ativar a caixa, o motor genético *só permitirá que nasçam cartelas que obedeçam a essas regras matemáticas*.\n- ⚠️ Aviso: Se você ligar TODOS os filtros de uma vez e travar as dezenas bloqueadas, a máquina pode não conseguir encontrar nenhum jogo viável na Terra. Nesse caso, a máquina usará uma inteligência que 'relaxa' a regra gradualmente (Ex: se não acha 7 ímpares, ela relaxa para 6 ou 9 para poder continuar).\n\n🎯 Estratégia Cofre Seguro (Foco 14 Pontos)\nNa Lotofácil real, acertar 15 pontos é dificílimo (1 em 3.2 milhões).\nAo ligar esta chave, você diz para a IA: 'Não ligue para o prêmio de 15 pontos'. O algoritmo zera o prêmio de 15 na mente dele e passa a buscar e cruzar SOMENTE jogos que dão 14 pontos com uma frequência altíssima. É perfeito para quem quer retorno garantido ao invés de buscar a loteria.",
+            "ia_chaves": "🧠 3. AS CHAVES DE INTELIGÊNCIA ARTIFICIAL (Lado Direito)\n\nAqui está a mágica do sistema. Você não precisa pensar, a máquina pensa por você.\n\n⏱️ O Atrasômetro Analítico\nVerifica quais dezenas estão presas e prestes a estourar baseado em desvio padrão matemático. Use para escolher suas dezenas Fixas manualmente.\n\n🔗 IA Markov (Previsão de Fluxo)\nO algoritmo usa 'Probabilidade Condicional'. Exemplo: Ele descobre que toda vez que a bola 04 sai, a bola 22 tem 80% de chance de sair logo depois.\n- Ao ativar, a máquina injeta as dezenas mais 'amigas' umas das outras no sistema.\n\n👑 Ensemble Híbrido (O Conselho Jedi)\nSe você não sabe qual IA usar, ative o Ensemble. Ele pega a opinião do Atrasômetro, a opinião da IA Markov, e a opinião de uma Árvore de Decisão XGBoost, vota, e entrega as Top 5 Dezenas Supremas.",
+            "autonoma": "💎 4. AS SUPER IAS AUTÔNOMAS (O 'Auto-Piloto')\n\nNa parte inferior direita, você tem os botões que transformam o simulador em um robô 100% autônomo.\n\n💎 Mineração Apriori (Combos de Ouro)\nA IA olha para os últimos 500 sorteios e caça Trincas (grupos de 3 números) que estão saindo igual água (Ex: 01, 10, 25).\nQuando a IA Genética cria um filho, ela dá um bônus imenso de pontuação se ele tiver essa Trinca. O resultado? Os jogos finais virão recheados com os padrões mais fortes do histórico.\n\n🎯 Auto-Piloto de Filtros (XGBoost)\nSubstitui a adivinhação humana dos Filtros do lado esquerdo.\nEm vez de VOCÊ escolher 'Soma de 180 a 210', o modelo de Machine Learning vai olhar para as marés dos sorteios e dizer: 'A tendência diz que amanhã a soma será exatamente 198'. E os filtros do motor vão se ajustar para travar apenas matrizes que dão soma 198. É brutal!\n\n🤖 IA Autônoma (Rede Neural Profunda PyTorch)\nVocê não sabe se deve colocar a Mutação em 5% ou 15%? \nAtive isso! A Inteligência Artificial (Deep Reinforcement Learning) vai assumir os controles. Ela vai testar a Mutação alta, vai ver que deu prejuízo, vai se punir matematicamente pelo PyTorch, e vai trocar sozinha para Mutação baixa. Ela guarda as conexões neurais na memória (storage/dqn_model.pth) contendo o que funciona. Deixe rodando por horas e o software ficará incrivelmente inteligente.",
+            "cenarios": "🚀 COMO USAR TUDO ISSO JUNTO? (Cenários Reais)\n\nCenário 1: 'O Robô Preguiçoso' (Deixa a IA fazer tudo)\nSe você quer ir tomar um café e deixar a máquina encontrar a perfeição:\n1. Ative 🎯 Auto-Piloto de Filtros\n2. Ative 💎 Mineração Apriori\n3. Ative 🤖 IA Autônoma (Rede Neural Profunda PyTorch)\n4. Selecione Quantidade de Jogos: 15 (para jogar baratinho na lotérica).\n5. Clique em Iniciar. A máquina vai definir os filtros, vai achar as trincas secretas, vai configurar a mutação sozinha e vai entregar a cartela pronta na aba 'Melhores'.\n\nCenário 2: 'O Investidor Conservador' (Cofre Seguro)\n1. Ative os filtros Ímpares, Moldura e Primos manualmente.\n2. Ative 🎯 Estratégia Cofre Seguro (Foco 14) (Para focar em fechar os 14 pontos).\n3. Ative 👑 Ensemble Híbrido (A IA colocará 5 dezenas quentes como Fixas na sua cartela).\n4. Severidade: 100%. Você será um general implacável; as cartelas erradas vão morrer rápido.\n5. Inicie o sistema.",
+            "faq": "❓ FAQ & SOLUÇÃO DE PROBLEMAS\n\nO sistema está muito lento! O que eu faço?\nA Inteligência Artificial exige bastante da CPU do computador. O sistema possui um modo Turbo (Múltiplos Núcleos) que você pode ativar na interface (Modo Fúria). Se mesmo assim estiver lento, diminua o número de População no arquivo config.py.\n\nPor que o 'Foco 14' diminui o lucro estimado na tela?\nPorque ele ignora (zera) a premiação raríssima de 15 pontos do cálculo. É uma estimativa mais realista e pessimista, mostrando o que você ganharia no 'pior cenário' fechando só prêmios menores.\n\nA Rede Neural da IA Autônoma reseta se eu fechar o programa?\nNão! Ela salva o aprendizado em storage/dqn_model.pth. O seu robô manterá o aprendizado das madrugadas passadas."
         }
         return ajudas.get(topico, "Selecione um tópico à esquerda.")
 
@@ -352,17 +343,12 @@ class Aplicacao(ctk.CTk):
         
         topicos = [
             ("Introdução", "intro"),
-            ("O Que Faz?", "o_que_faz"),
-            ("Apostas Mutantes", "apostas"),
-            ("Regras de Ouro", "regras_ouro"),
-            ("Ler os Logs", "ler_log"),
-            ("Inteligência Híbrida", "hibrida"),
-            ("Modo Estável", "estavel"),
-            ("Modo Agressivo", "agressivo"),
-            ("Modo Turbo", "turbo"),
-            ("Taxa de Mutação", "mutacao"),
-            ("Extinção", "extincao"),
-            ("Snapshot", "snapshot")
+            ("1. O Genético", "genetico"),
+            ("2. Filtros e Regras", "filtros"),
+            ("3. Chaves de IA", "ia_chaves"),
+            ("4. Auto-Piloto", "autonoma"),
+            ("Cenários Reais", "cenarios"),
+            ("FAQ / Problemas", "faq")
         ]
         for lbl, key in topicos:
             btn = ctk.CTkButton(frm_guia_menu, text=lbl, command=lambda k=key: self.mostrar_ajuda(k), fg_color="#0056b3")
