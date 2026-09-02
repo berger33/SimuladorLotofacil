@@ -1,0 +1,9 @@
+matplotlib
+numpy
+requests
+pandas
+customtkinter
+pytest
+tensorflow
+xgboost
+optuna
