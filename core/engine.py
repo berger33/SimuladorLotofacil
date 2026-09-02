@@ -6,6 +6,7 @@ import concurrent.futures
 from collections import Counter
 from queue import Queue
 import math
+import numpy as np
 
 from core.genetic import gerar_sistema, crossover, mutacao, filtrar_diversidade
 from core.evaluator import avaliar, _carregar_bases_seguras

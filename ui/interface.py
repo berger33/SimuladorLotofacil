@@ -344,8 +344,31 @@ class Aplicacao(ctk.CTk):
         t_top3 = self.tabview_principal.add("Top 3")
         t_detalhes = self.tabview_principal.add("Detalhes da Matriz")
         
+        frm_guia_menu = ctk.CTkFrame(t_guia, width=200)
+        frm_guia_menu.pack(side="left", fill="y", padx=5, pady=5)
+        
         self.txt_ajuda_display = ctk.CTkTextbox(t_guia, font=("Segoe UI", 16), text_color=("black", "white"), fg_color=("gray95", "gray12"), corner_radius=10)
-        self.txt_ajuda_display.pack(fill="both", expand=True, padx=10, pady=10)
+        self.txt_ajuda_display.pack(side="right", fill="both", expand=True, padx=5, pady=5)
+        
+        topicos = [
+            ("Introdução", "intro"),
+            ("O Que Faz?", "o_que_faz"),
+            ("Apostas Mutantes", "apostas"),
+            ("Regras de Ouro", "regras_ouro"),
+            ("Ler os Logs", "ler_log"),
+            ("Inteligência Híbrida", "hibrida"),
+            ("Modo Estável", "estavel"),
+            ("Modo Agressivo", "agressivo"),
+            ("Modo Turbo", "turbo"),
+            ("Taxa de Mutação", "mutacao"),
+            ("Extinção", "extincao"),
+            ("Snapshot", "snapshot")
+        ]
+        for lbl, key in topicos:
+            btn = ctk.CTkButton(frm_guia_menu, text=lbl, command=lambda k=key: self.mostrar_ajuda(k), fg_color="#0056b3")
+            btn.pack(fill="x", pady=2, padx=5)
+            
+        self.mostrar_ajuda("intro")
 
         # ABA COCKPIT
         frame_btns = ctk.CTkFrame(t_cockpit, fg_color="transparent")
