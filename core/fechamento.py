@@ -5,7 +5,7 @@ def gerar_desdobramento(
     num_jogos: int, 
     tam_jogo: int, 
     filtros: dict | None = None
-) -> list[list[int]]:
+) -> tuple[list[list[int]], bool]:
     
     if filtros is None:
         filtros = {}
@@ -38,9 +38,11 @@ def gerar_desdobramento(
         jogos_validos.append(jogo_candidato)
         jogos_hashes.add(jogo_hash)
             
+    relaxou = False
     # Fase 2: Fallback com Relaxamento Gradual (Resolve o problema de jogos totalmente inválidos)
     relax_factor = 1
     while len(jogos_validos) < num_jogos:
+        relaxou = True
         jogo_candidato = random.sample(dezenas, tam_jogo)
         jogo_candidato.sort()
         jogo_hash = tuple(jogo_candidato)
@@ -55,4 +57,4 @@ def gerar_desdobramento(
         jogos_validos.append(jogo_candidato)
         jogos_hashes.add(jogo_hash)
             
-    return jogos_validos
+    return jogos_validos, relaxou

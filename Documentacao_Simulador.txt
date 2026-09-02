@@ -1,133 +1,79 @@
 ================================================================================
-                      SIMULADOR LOTOFÁCIL PRO - V2.0
-                  RELATÓRIO TÉCNICO E MANUAL DO USUÁRIO
+                      SIMULADOR LOTOFÁCIL PRO - COCKPIT LAB V11
+                  RELATÓRIO TÉCNICO E MANUAL DO USUÁRIO AVANÇADO
 ================================================================================
 
-O "Simulador Lotofácil Pro" é uma aplicação desktop de alta performance, focada 
-em análise preditiva, modelagem estatística e evolução genética de dezenas. 
-Construído em Python, o sistema utiliza Processamento Paralelo (Multicore), 
-Heurística de Poda e Ciência de Dados para encontrar as melhores matrizes 
-matemáticas de 20 dezenas, com desdobramento para 33 jogos de 15 dezenas.
+O "Simulador Lotofácil Pro" (Cockpit Lab V11) é um motor de Inteligência Artificial 
+focado em análise preditiva, modelagem estocástica e otimização meta-heurística 
+de dezenas da loteria. Construído em Python, o sistema utiliza Processamento 
+Paralelo, Heurística de Poda e Machine Learning Avançado (XGBoost) para encontrar 
+matrizes de 20 dezenas com altíssima probabilidade de retorno financeiro (ROI).
 
 ================================================================================
-PARTE 1: FICHA TÉCNICA E ARQUITETURA DO SISTEMA (ENDPOINTS/MÓDULOS)
+PARTE 1: FICHA TÉCNICA E ARQUITETURA DO SISTEMA
 ================================================================================
 
-[1. ESTRUTURA DE ARQUIVOS]
-- app.py                : Arquivo de inicialização. Contém a trava de 
-                          multiprocessamento (freeze_support) para Windows.
-- recuperar_base.py     : Script de manutenção para forçar o download limpo de 
-                          todo o histórico da Caixa.
-- ui/interface.py       : O "Cérebro Visual". Gerencia janelas, threads, gráficos,
-                          limpeza de RAM e interações do usuário.
-- core/genetic.py       : O "Motor Evolutivo". Cuida da criação de indivíduos, 
-                          Cruzamento (Crossover) e Mutação de DNA matemático.
-- core/evaluator.py     : O "Juiz". Simula anos de sorteios em frações de segundo, 
-                          testando cada desdobramento gerado.
-- core/fechamento.py    : A "Peneira". Transforma a base de 20 dezenas em 33 
-                          apostas, eliminando jogos que não passam nos filtros.
-- core/crawler.py       : O "Vigia". Conecta-se à API da Caixa para manter a 
-                          base de dados atualizada.
+[1. ESTRUTURA DE MÓDULOS]
+- app.py                : Arquivo de inicialização e trava multicore (Windows).
+- recuperar_base.py     : Força o download/limpeza do cache histórico da Caixa.
+- ui/interface.py       : O Cérebro Visual (Dashboards, gráficos, parâmetros).
+- core/engine.py        : O Motor Híbrido. Orquestra as IAs, testes de estresse e loops.
+- core/genetic.py       : O Motor Evolutivo (Mutação, Crossover, Filtros de Diversidade Hamming).
+- core/evaluator.py     : O Validador. Roda as simulações hipergeométricas de fitness.
+- core/fechamento.py    : A Peneira com "Relaxamento Automático" de Filtros.
+- core/ml_intelligence.py: O Cientista de Dados (Atrasômetros, Markov, Ensemble XGBoost).
+- core/crawler.py       : O Web Crawler Resiliente com fallback para Cache Offline.
 
-[2. MOTORES E FUNCIONALIDADES TÉCNICAS]
--> Motor Genético (Algoritmo): Utiliza uma População de matrizes. As melhores 
-   (Elite) cruzam suas dezenas e sofrem Mutações (1% a 2%) para encontrar 
-   combinações cada vez mais lucrativas, fugindo de "becos sem saída".
+[2. MOTORES DE INTELIGÊNCIA ARTIFICIAL]
+-> Motor Genético (DNA Matemático): Populações sofrem Mutação, cruzam matrizes de Elite 
+   e aplicam o "Filtro de Diversidade Hamming" para impedir a proliferação de matrizes 
+   clones.
 
--> Heurística de Poda (Filtros Ativos): Avalia cada uma das 33 cartelas geradas. 
-   Se uma cartela violar as regras de Ímpares, Moldura ou Primos, ela é 
-   descartada da memória antes de ser testada, poupando processamento.
+-> O Conselho Jedi (Ensemble Híbrido): Através do `ml_intelligence.py`, a IA roda:
+   1. Cadeias de Markov (Probabilidade condicional de transição de dezenas).
+   2. Atrasômetro Analítico (Média, variância e desvio padrão de atrasos).
+   3. Árvores de Decisão (XGBoost) para prever o próximo sorteio.
+   A junção dos 3 fatores define as "Dezenas de Ouro".
 
--> Trava Anti-Overfitting (Segurança): O `evaluator.py` só utiliza os sorteios 
-   reais para base de teste se o banco de dados tiver mais de 1000 concursos. 
-   Caso contrário, testa 100% contra a matemática caótica, impedindo a IA de 
-   "decorar" um sorteio e gerar lucros irreais.
+-> Auto-Tuning (Optuna): O sistema calibra sozinho os hiperparâmetros (como % de 
+   Mutação e Severidade) encontrando a eficiência ótima de evolução antes da execução real.
 
--> Garbage Collector (Auto-Limpeza): A cada 10 gerações, a interface força o 
-   Python a limpar o lixo de processamento na Memória RAM, permitindo que o 
-   sistema rode 24 horas por dia, 7 dias por semana, sem travar o computador.
-
--> Integração Pandas (Exportação): Converte a base JSON em um DataFrame de alta 
-   velocidade e exporta para CSV delimitado por ponto-e-vírgula (;), pronto para 
-   leitura nativa no Microsoft Excel.
+-> Prova de Fogo (Stress Test): O validador testa os jogos contra amostras de 
+   sorteios reais, dezenas randômicas ou utilizando bootstrap hipergeométrico para 
+   mitigar overfitting.
 
 ================================================================================
-PARTE 2: MANUAL DO USUÁRIO (COMO OPERAR A MÁQUINA)
+PARTE 2: MANUAL DO USUÁRIO
 ================================================================================
 
-[A. VISÃO GERAL DA INTERFACE]
-A tela é dividida em três setores principais:
-1. Painel de Ações (Topo Esquerdo): Botões de Iniciar, Pausar, Parar e Turbo.
-2. Tela Principal (Centro): Exibe o Log em tempo real, Listas, Top 3 e Gráficos.
-3. Painel de Controle (Direita): Navegação, Filtros, Presets e Heatmap (Raio-X).
+[A. FILTROS E CONDIÇÕES DE CONTORNO]
+- Ímpares, Moldura e Primos: Filtros de fechamento baseados na intuição. 
+  * AVISO DE RELAXAMENTO: Se você forçar parâmetros irreais, o sistema relaxará os limites 
+    (+1, -1) gradualmente e emitirá uma "Anomalia" no painel, garantindo que o programa 
+    não congele por falta de combinações possíveis.
 
-[B. CONFIGURANDO A SUA ESTRATÉGIA]
-Antes de iniciar a simulação, você deve configurar os parâmetros no painel direito.
+- Dezenas Bloqueadas e Fixas: Elimine números indesejados ou injete o "Top 5" 
+  da Inteligência Artificial em todos os jogos.
 
-1. Filtros de Poda (Checkboxes):
-   - Ímpares (7 ou 8): Força os jogos a terem a proporção mais comum de ímpares.
-   - Moldura (9 a 11): Concentra as dezenas na borda do volante.
-   - Primos (4 a 6): Regra de ouro da loteria.
-   * Dica: Marcar todos os filtros cria jogos incrivelmente realistas, mas 
-     pode tornar a evolução ligeiramente mais lenta (a IA trabalha mais).
+[B. ESTRATÉGIAS DE INVESTIMENTO]
+- Cofre Seguro (Foco 14 Pontos): Quando ativado, a IA desconsidera o prêmio de 15 pontos 
+  na equação de avaliação. Isso obriga a genética a procurar matrizes sólidas de 
+  14 pontos (menor risco de variância), garantindo retornos mais frequentes.
 
-2. Dezenas Bloqueadas (Lista Negra):
-   - Digite os números separados por vírgula (Ex: 3, 15, 22).
-   - O algoritmo é estritamente proibido de inserir essas dezenas na Base de 20.
+- Gestão de Banca: Defina um capital (ex: 1000). Se os sorteios mostrarem uma 
+  fuga enorme (Drawdown) que consuma 50% ou mais da banca estipulada, 
+  o Motor dispara o alerta de "Risco de Ruína".
 
-3. Gerenciador de Presets (Perfis):
-   - Montou uma configuração de filtros perfeita? Clique no botão "Salvar" (💾), 
-     digite um nome (Ex: "Estratégia Segunda-Feira") e dê OK.
-   - Para recuperar, basta selecionar o nome na lista suspensa "Carregando...".
-
-[C. EXECUTANDO A INTELIGÊNCIA ARTIFICIAL]
-1. Turbo Mode: 
-   - Deixe em "OFF" se estiver usando o PC para outras coisas.
-   - Ative para "ON" se quiser usar todos os núcleos do seu processador (fará 
-     a ventoinha do PC girar mais rápido e achará resultados velozmente).
-     
-2. Botão "Iniciar IA": 
-   - Ao clicar, o Auto-Update verifica a internet. Em seguida, o Log começa a 
-     correr. O sistema exibirá G0, G1, G2 (Gerações), mostrando o saldo médio de 
-     retorno. Saldo negativo significa prejuízo; positivo significa lucro.
-
-3. Botão "Pausar/Retomar":
-   - Clique em Pausar (Fica Amarelo) para congelar os testes e analisar a tela. 
-   - Clique em Retomar (Fica Azul) para continuar exatamente de onde parou.
-
-4. Botão "Parar":
-   - Encerra a thread atual. O melhor resultado já estará salvo no HD.
-
-[D. ANALISANDO OS RESULTADOS]
-Acompanhe os dados em tempo real sem precisar parar a máquina:
-
-1. Heatmap da IA (Raio-X):
-   - Observando os 25 quadrados no canto direito inferior, você verá a IA 
-     "esquentando" e "esfriando" dezenas. 
-   - Cores: Azul Escuro (Descartada) -> Ciano -> Amarelo -> Laranja -> Vermelho (Ouro).
-
-2. Gráfico de Lucro:
-   - Clique no menu "Gráfico". A linha verde mostra o histórico de R$ das últimas 
-     100 gerações. A linha tracejada vermelha é o Zero (ponto de empate). O 
-     objetivo é que a linha verde suba e fique acima da vermelha.
-
-3. Ver Top 3 e Ranking:
-   - "Ranking Top 50": Exibe uma lista clicável. Clique em qualquer posição para 
-     ver os 33 jogos gerados, os prêmios esperados e a Base de 20 Ouro.
-   - "Visualizar Top 3": Uma tela rápida apenas com as 3 melhores matrizes 
-     absolutas de todos os tempos.
-
-[E. EXPORTAÇÃO E CIÊNCIA DE DADOS]
-- Clique em "Exportar Dataset CSV".
-- O sistema gerará o arquivo 'analise_dados_loto.csv' na pasta 'storage'.
-- Abra este arquivo no Excel para criar tabelas dinâmicas, gráficos de dispersão 
-  ou entregar as apostas para impressão.
+[C. VISUALIZANDO RESULTADOS (O COCKPIT)]
+- Painel de Anomalias: Fique de olho. Ele relata Filtros Relaxados, Extinção em Massa 
+  (quando o Motor decide reiniciar a população) e avisos do Conselho Jedi.
+- Heatmap de IA: Quadrados que esquentam (Ouro/Vermelho) conforme dezenas ganham tração.
+- Exportar Dataset CSV: Útil para Excel ou impressão de apostas (na pasta 'storage').
 
 ================================================================================
                                 CONSIDERACÕES FINAIS
 ================================================================================
-* Manutenção: Se a API da Caixa Econômica sair do ar ou a internet cair, o 
-  sistema continuará funcionando perfeitamente de forma off-line, utilizando a 
-  matemática de cauda longa do arquivo local. 
-* O arquivo 'recuperar_base.py' deve ser usado a cada 3 meses ou sempre que você 
-  quiser ter certeza absoluta de que a base local foi recarregada por completo.
+* Resiliência: O sistema puxa os dados oficiais da Caixa. Se falhar, usa 2 APIs de terceiros. 
+  Se ficar sem internet, usa o Cache local. O programa NUNCA para.
+* Requisitos Atendidos: Para rodar em "Força Total", mantenha o XGBoost e Optuna 
+  sempre atualizados através do comando (pip install -r requirements.txt).

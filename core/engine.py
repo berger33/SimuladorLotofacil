@@ -219,6 +219,9 @@ class MotorLotofacil:
                 
                 melhor, pior, media_pop = avaliados[0], avaliados[-1], sum(a[1] for a in avaliados) / len(avaliados)
                 
+                if melhor[9] and g % 10 == 0:
+                    self.send_msg("anomalia", "Filtros muito restritos. O sistema precisou aplicar um relaxamento nas cartelas.")
+                
                 if self.params.get("gestao_banca_ativa"):
                     banca_str = str(self.params.get("banca", "1000"))
                     banca_atual = float(banca_str) if banca_str.replace('.', '', 1).isdigit() else 1000.0

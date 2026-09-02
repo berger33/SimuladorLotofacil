@@ -30,7 +30,7 @@ def avaliar(args: tuple) -> tuple:
 
     h11 = h12 = h13 = h14 = h15 = ruins = 0
     filtros_seguros = filtros if filtros is not None else {}
-    sistema_jogos = gerar_desdobramento(individuo_20, num_jogos, TAM_JOGO, filtros_seguros)
+    sistema_jogos, relaxou = gerar_desdobramento(individuo_20, num_jogos, TAM_JOGO, filtros_seguros)
     
     sistema_jogos_sets = [set(j) for j in sistema_jogos]
 
@@ -76,4 +76,4 @@ def avaliar(args: tuple) -> tuple:
 
     if semente_ativa: random.seed()
 
-    return score_final, h11, h12, h13, h14, h15, ruins, sistema_jogos
+    return score_final, h11, h12, h13, h14, h15, ruins, sistema_jogos, relaxou
