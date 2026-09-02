@@ -1,6 +1,79 @@
 import math
+import itertools
 from collections import Counter
 from core.evaluator import _carregar_bases_seguras
+
+def minerar_regras_associacao(top_n=10, tamanho_combo=3):
+    treino, validacao = _carregar_bases_seguras()
+    sorteios = treino + validacao
+    
+    if not sorteios: return []
+        
+    combos_freq = Counter()
+    sorteios_recentes = sorteios[-500:] # Otimização: analisar apenas histórico recente
+    
+    for sorteio in sorteios_recentes:
+        dezenas = sorted(list(sorteio))
+        para_combos = list(itertools.combinations(dezenas, tamanho_combo))
+        for combo in para_combos:
+            combos_freq[combo] += 1
+            
+    top_combos = [set(combo) for combo, count in combos_freq.most_common(top_n)]
+    return top_combos
+
+def prever_macro_propriedades():
+    """
+    Usa XGBoost Regressor (se disponível) ou Média Móvel para prever 
+    o alvo exato dos filtros (Soma, Ímpares, Moldura, etc) para o próximo sorteio.
+    """
+    treino, validacao = _carregar_bases_seguras()
+    sorteios = treino + validacao
+    if len(sorteios) < 50: return {}
+    
+    primos_set = {2, 3, 5, 7, 11, 13, 17, 19, 23}
+    moldura_set = {1, 2, 3, 4, 5, 6, 10, 11, 15, 16, 20, 21, 22, 23, 24, 25}
+    fibo_set = {1, 2, 3, 5, 8, 13, 21}
+    
+    def get_macros(sorteio):
+        s_list = list(sorteio)
+        impar = sum(1 for x in s_list if x % 2 != 0)
+        mold = sum(1 for x in s_list if x in moldura_set)
+        prim = sum(1 for x in s_list if x in primos_set)
+        fibo = sum(1 for x in s_list if x in fibo_set)
+        soma = sum(s_list)
+        return {"impar": impar, "moldura": mold, "primos": prim, "fibonacci": fibo, "soma": soma}
+        
+    historico_macros = [get_macros(s) for s in sorteios[-300:]] # ultimos 300
+    
+    previsoes = {}
+    try:
+        import xgboost as xgb
+        import numpy as np
+        
+        for feature in ["impar", "moldura", "primos", "fibonacci", "soma"]:
+            y = [h[feature] for h in historico_macros]
+            # Criar lags de 3 periodos
+            X, y_target = [], []
+            for i in range(3, len(y)):
+                X.append([y[i-3], y[i-2], y[i-1]])
+                y_target.append(y[i])
+                
+            model = xgb.XGBRegressor(n_estimators=30, max_depth=3, objective='reg:squarederror')
+            model.fit(np.array(X), np.array(y_target))
+            
+            # Prever o proximo
+            last_3 = np.array([[y[-3], y[-2], y[-1]]])
+            pred = model.predict(last_3)[0]
+            previsoes[feature] = int(round(pred))
+    except ImportError:
+        # Fallback para Média Móvel Exponencial (EMA) rápida
+        for feature in ["impar", "moldura", "primos", "fibonacci", "soma"]:
+            y = [h[feature] for h in historico_macros[-10:]]
+            weights = list(range(1, 11))
+            wma = sum(y[i]*weights[i] for i in range(10)) / sum(weights)
+            previsoes[feature] = int(round(wma))
+            
+    return previsoes
 
 def analisar_atrasos():
     treino, validacao = _carregar_bases_seguras()

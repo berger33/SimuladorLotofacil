@@ -62,6 +62,9 @@ class Aplicacao(ctk.CTk):
             "soma": self.chk_soma.get() == 1,
             "sequencia": self.chk_sequencia.get() == 1,
             "fibonacci": self.chk_fibonacci.get() == 1,
+            "apriori_ativo": self.chk_apriori.get() == 1,
+            "auto_piloto": self.chk_autopiloto.get() == 1,
+            "rl_ativo": self.chk_rl.get() == 1,
             "taxa_mutacao": self.slider_mutacao.get(),
             "severidade": self.slider_severidade.get(),
             "memoria_ativa": self.memoria_ativa.get(),
@@ -427,7 +430,16 @@ class Aplicacao(ctk.CTk):
         ctk.CTkSwitch(frame_dir, text="👑 Ensemble Híbrido (XGBoost)", variable=self.ensemble_ativo, progress_color="#dc3545").pack(anchor="w", padx=10, pady=5)
         
         # O NOVO SWITCH DO COFRE SEGURO
-        ctk.CTkSwitch(frame_dir, text="🎯 Estratégia Cofre Seguro (Foco 14)", variable=self.foco_14_pontos, progress_color="#d97706").pack(anchor="w", padx=10, pady=(5, 15))
+        ctk.CTkSwitch(frame_dir, text="🎯 Estratégia Cofre Seguro (Foco 14)", variable=self.foco_14_pontos, progress_color="#d97706").pack(anchor="w", padx=10, pady=5)
+        
+        self.chk_apriori = ctk.CTkSwitch(frame_dir, text="💎 Mineração Apriori (Combos de Ouro)", progress_color="#ffd700")
+        self.chk_apriori.pack(anchor="w", padx=10, pady=5)
+        
+        self.chk_autopiloto = ctk.CTkSwitch(frame_dir, text="🎯 Auto-Piloto de Filtros (XGBoost)", progress_color="#17a2b8")
+        self.chk_autopiloto.pack(anchor="w", padx=10, pady=5)
+        
+        self.chk_rl = ctk.CTkSwitch(frame_dir, text="🤖 IA Autônoma (Q-Learning configs)", progress_color="#8a2be2")
+        self.chk_rl.pack(anchor="w", padx=10, pady=(5, 15))
         
         btn_action_font = ("Segoe UI", 13)
         ctk.CTkButton(frame_dir, text="🛠️ Modo Estável", corner_radius=6, command=self.modo_estavel).pack(pady=3, fill="x", padx=5)

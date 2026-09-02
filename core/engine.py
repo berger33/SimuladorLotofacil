@@ -11,7 +11,8 @@ from core.genetic import gerar_sistema, crossover, mutacao, filtrar_diversidade
 from core.evaluator import avaliar, _carregar_bases_seguras
 from core.learner import atualizar_memoria, penalizar_jogo
 from core.data import load, save
-from core.ml_intelligence import analisar_atrasos, gerar_previsao_markov, executar_ensemble_hibrido
+from core.ml_intelligence import analisar_atrasos, gerar_previsao_markov, executar_ensemble_hibrido, minerar_regras_associacao, prever_macro_propriedades
+from core.rl_agent import RLAgent
 from core.logger import logger
 from config import POPULACAO, ELITE, PREMIO_11, PREMIO_12, PREMIO_13, PREMIO_14, PREMIO_15, CUSTO_APOSTA
 
@@ -27,6 +28,9 @@ class MotorLotofacil:
         
         self.msg_queue = Queue() 
         self.params = {}         
+        self.rl_agent = RLAgent()
+        self.estado_anterior_rl = "estagnado"
+        self.acao_idx_anterior_rl = 0
 
     def send_msg(self, tipo, conteudo=None, **kwargs):
         mensagem = {"tipo": tipo, "conteudo": conteudo}
@@ -47,8 +51,8 @@ class MotorLotofacil:
                 sev = trial.suggest_int("severidade", 0, 100)
                 pop = [gerar_sistema([], [], sev / 100.0, True, 33) for _ in range(5)]
                 filtros = {"impar": False, "moldura": False, "primos": False, "bloqueadas": []}
-                # Passa o 'foco_14' como False para o teste rápido do Optuna
-                args_list = [(s, filtros, 33, "Histórico", False, False) for s in pop]
+                # Passa o 'foco_14' como False e 'combos_ouro' vazio para o teste rápido do Optuna
+                args_list = [(s, filtros, 33, "Histórico", False, False, []) for s in pop]
                 resultados = [avaliar(a)[0] for a in args_list] 
                 return sum(resultados) / len(resultados)
 
@@ -179,6 +183,7 @@ class MotorLotofacil:
         executor = concurrent.futures.ProcessPoolExecutor()
         
         try:
+            combos_ouro = []
             while self.rodando:
                 while self.pausado and self.rodando: time.sleep(0.5)
                 if not self.rodando: break
@@ -209,17 +214,57 @@ class MotorLotofacil:
                     "fibonacci": self.params.get("fibonacci", False),
                     "bloqueadas": bloqueadas
                 }
-                taxa_mutacao, severidade = self.params.get("taxa_mutacao", 2) / 100.0, self.params.get("severidade", 80) / 100.0
+                
+                rl_ativo = self.params.get("rl_ativo", False)
+                if rl_ativo:
+                    estado_atual = self.rl_agent.determinar_estado(self.historico_media_pop)
+                    if len(self.historico_media_pop) > 0:
+                        recompensa = self.historico_media_pop[-1]
+                        self.rl_agent.aprender(self.estado_anterior_rl, self.acao_idx_anterior_rl, recompensa, estado_atual)
+                    
+                    acao = self.rl_agent.escolher_acao(estado_atual)
+                    self.estado_anterior_rl = estado_atual
+                    self.acao_idx_anterior_rl = self.rl_agent.acao_atual_idx
+                    
+                    taxa_mutacao = acao["taxa_mutacao"] / 100.0
+                    severidade = acao["severidade"] / 100.0
+                    apriori_ativo = acao["apriori_ativo"]
+                    auto_piloto = acao["auto_piloto"]
+                    
+                    if g % 10 == 0:
+                        self.send_msg("log", f"🤖 [RL Agent] Estado: {estado_atual.upper()} | Estratégia Aplicada: {acao['nome']}\n")
+                else:
+                    auto_piloto = self.params.get("auto_piloto", False)
+                    apriori_ativo = self.params.get("apriori_ativo", False)
+                    taxa_mutacao, severidade = self.params.get("taxa_mutacao", 2) / 100.0, self.params.get("severidade", 80) / 100.0
+
+                if auto_piloto:
+                    if not hasattr(self, 'ultimas_previsoes_macro') or self.ultimas_previsoes_macro is None:
+                        self.send_msg("log", "🎯 Auto-Piloto (XGBoost): Prevendo alvos exatos dos filtros para o próximo sorteio...\n")
+                        self.ultimas_previsoes_macro = prever_macro_propriedades()
+                        self.send_msg("log", f"🎯 Alvos do Auto-Piloto travados: {self.ultimas_previsoes_macro}\n")
+                    filtros_ativos.update(self.ultimas_previsoes_macro)
+                else:
+                    self.ultimas_previsoes_macro = None
+                    
                 mem_ativa, usar_hamming = self.params.get("memoria_ativa", True), self.params.get("filtro_hamming", False)
                 
                 # Resgata o novo botão 'Estratégia Cofre Seguro'
                 foco_14 = self.params.get("foco_14", False)
+                apriori_ativo = self.params.get("apriori_ativo", False)
+                
+                if apriori_ativo and not combos_ouro:
+                    self.send_msg("log", "💎 Mineração Apriori: Mapeando os Combos de Ouro do Histórico...\n")
+                    combos_ouro = minerar_regras_associacao(top_n=15, tamanho_combo=3)
+                    self.send_msg("log", f"💎 {len(combos_ouro)} Combos de Ouro (Trincas) descobertos! Bônus genético ativado.\n")
+                elif not apriori_ativo:
+                    combos_ouro = []
 
                 while len(pop) < POPULACAO:
                     pop.append(gerar_sistema(bloqueadas, fixas, severidade, mem_ativa, self.num_jogos_ativo))
 
                 modo_treino, semente_ativa = self.params.get("modo_treino", "Histórico"), self.params.get("semente_ativa", False)
-                pop_com_filtros = [(s, filtros_ativos, self.num_jogos_ativo, modo_treino, semente_ativa, foco_14) for s in pop]
+                pop_com_filtros = [(s, filtros_ativos, self.num_jogos_ativo, modo_treino, semente_ativa, foco_14, combos_ouro) for s in pop]
                 resultados = list(executor.map(avaliar, pop_com_filtros)) if self.turbo else [avaliar(args) for args in pop_com_filtros]
 
                 avaliados = [(s, *res) for s, res in zip(pop, resultados)]

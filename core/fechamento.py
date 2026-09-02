@@ -46,12 +46,31 @@ def gerar_desdobramento(
         
         if jogo_hash in jogos_hashes: continue
 
-        if impar_req and sum(1 for x in jogo_candidato if x % 2 != 0) not in [7, 8]: continue
-        if moldura_req and sum(1 for x in jogo_candidato if x in moldura_set) not in [9, 10, 11]: continue
-        if primos_req and sum(1 for x in jogo_candidato if x in primos_set) not in [4, 5, 6]: continue
-        if soma_req and not (180 <= sum(jogo_candidato) <= 210): continue
-        if seq_req and max_consecutiva(jogo_candidato) > 6: continue
-        if fibo_req and sum(1 for x in jogo_candidato if x in fibo_set) not in [4, 5, 6]: continue
+        # Fase 1 check
+        if type(impar_req) is int:
+            if sum(1 for x in jogo_candidato if x % 2 != 0) != impar_req: continue
+        elif impar_req and sum(1 for x in jogo_candidato if x % 2 != 0) not in [7, 8]: continue
+        
+        if type(moldura_req) is int:
+            if sum(1 for x in jogo_candidato if x in moldura_set) != moldura_req: continue
+        elif moldura_req and sum(1 for x in jogo_candidato if x in moldura_set) not in [9, 10, 11]: continue
+        
+        if type(primos_req) is int:
+            if sum(1 for x in jogo_candidato if x in primos_set) != primos_req: continue
+        elif primos_req and sum(1 for x in jogo_candidato if x in primos_set) not in [4, 5, 6]: continue
+        
+        if type(soma_req) is int:
+            # Tolerancia leve de +-2 para a soma alvo na fase 1
+            if not (soma_req - 2 <= sum(jogo_candidato) <= soma_req + 2): continue
+        elif soma_req and not (180 <= sum(jogo_candidato) <= 210): continue
+        
+        if type(seq_req) is int:
+            if max_consecutiva(jogo_candidato) > seq_req: continue
+        elif seq_req and max_consecutiva(jogo_candidato) > 6: continue
+        
+        if type(fibo_req) is int:
+            if sum(1 for x in jogo_candidato if x in fibo_set) != fibo_req: continue
+        elif fibo_req and sum(1 for x in jogo_candidato if x in fibo_set) not in [4, 5, 6]: continue
             
         jogos_validos.append(jogo_candidato)
         jogos_hashes.add(jogo_hash)
@@ -68,18 +87,34 @@ def gerar_desdobramento(
         if jogo_hash in jogos_hashes: continue
         
         valido = True
-        if impar_req and sum(1 for x in jogo_candidato if x % 2 != 0) not in range(7-relax_factor, 8+relax_factor+1): 
-            valido = False
-        if moldura_req and sum(1 for x in jogo_candidato if x in moldura_set) not in range(9-relax_factor, 11+relax_factor+1): 
-            valido = False
-        if primos_req and sum(1 for x in jogo_candidato if x in primos_set) not in range(4-relax_factor, 6+relax_factor+1):
-            valido = False
-        if soma_req and not (180-(relax_factor*5) <= sum(jogo_candidato) <= 210+(relax_factor*5)):
-            valido = False
-        if seq_req and max_consecutiva(jogo_candidato) > (6 + relax_factor):
-            valido = False
-        if fibo_req and sum(1 for x in jogo_candidato if x in fibo_set) not in range(4-relax_factor, 6+relax_factor+1):
-            valido = False
+        c_impar = sum(1 for x in jogo_candidato if x % 2 != 0)
+        c_mold = sum(1 for x in jogo_candidato if x in moldura_set)
+        c_prim = sum(1 for x in jogo_candidato if x in primos_set)
+        c_fibo = sum(1 for x in jogo_candidato if x in fibo_set)
+        
+        if type(impar_req) is int:
+            if c_impar not in range(impar_req-relax_factor, impar_req+relax_factor+1): valido = False
+        elif impar_req and c_impar not in range(7-relax_factor, 8+relax_factor+1): valido = False
+        
+        if type(moldura_req) is int:
+            if c_mold not in range(moldura_req-relax_factor, moldura_req+relax_factor+1): valido = False
+        elif moldura_req and c_mold not in range(9-relax_factor, 11+relax_factor+1): valido = False
+        
+        if type(primos_req) is int:
+            if c_prim not in range(primos_req-relax_factor, primos_req+relax_factor+1): valido = False
+        elif primos_req and c_prim not in range(4-relax_factor, 6+relax_factor+1): valido = False
+        
+        if type(soma_req) is int:
+            if not (soma_req-(relax_factor*5) <= sum(jogo_candidato) <= soma_req+(relax_factor*5)): valido = False
+        elif soma_req and not (180-(relax_factor*5) <= sum(jogo_candidato) <= 210+(relax_factor*5)): valido = False
+        
+        if type(seq_req) is int:
+            if max_consecutiva(jogo_candidato) > (seq_req + relax_factor): valido = False
+        elif seq_req and max_consecutiva(jogo_candidato) > (6 + relax_factor): valido = False
+        
+        if type(fibo_req) is int:
+            if c_fibo not in range(fibo_req-relax_factor, fibo_req+relax_factor+1): valido = False
+        elif fibo_req and c_fibo not in range(4-relax_factor, 6+relax_factor+1): valido = False
             
         if not valido:
             relax_factor += 1
