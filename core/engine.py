@@ -25,6 +25,9 @@ class MotorLotofacil:
         self.num_jogos_ativo = 33
         self.historico_scores = []
         self.historico_media_pop = []
+        self.historico_h14 = []
+        self.historico_h15 = []
+        self.current_drawdown = 0.0
         
         self.msg_queue = Queue() 
         self.params = {}         
@@ -197,6 +200,7 @@ class MotorLotofacil:
                     base_salva = load(f"melhores_matriz_{self.num_jogos_ativo}.json")
                     pop = [set(item["base_20"]) for item in base_salva[:POPULACAO]] if base_salva else []
                     self.historico_scores.clear(); self.historico_media_pop.clear()
+                    self.historico_h14.clear(); self.historico_h15.clear()
                     self.send_msg("update_grafico"); self.send_msg("refresh_ecos")
                     g = 0 
 
@@ -217,7 +221,7 @@ class MotorLotofacil:
                 
                 rl_ativo = self.params.get("rl_ativo", False)
                 if rl_ativo:
-                    estado_atual = self.rl_agent.determinar_estado(self.historico_media_pop)
+                    estado_atual = self.rl_agent.determinar_estado(self.historico_media_pop, self.historico_h14, self.historico_h15, self.current_drawdown)
                     if len(self.historico_media_pop) > 0:
                         recompensa = self.historico_media_pop[-1]
                         self.rl_agent.aprender(self.estado_anterior_rl, self.acao_idx_anterior_rl, recompensa, estado_atual)
@@ -278,16 +282,22 @@ class MotorLotofacil:
                 if self.params.get("gestao_banca_ativa"):
                     banca_str = str(self.params.get("banca", "1000"))
                     banca_atual = float(banca_str) if banca_str.replace('.', '', 1).isdigit() else 1000.0
-                    if (drawdown := abs(pior[1]) if pior[1] < 0 else 0) > banca_atual * 0.5: 
-                        self.send_msg("anomalia", f"Risco de Ruína (Drawdown R${drawdown:.2f}) na Geração {g}")
+                    self.current_drawdown = abs(pior[1]) if pior[1] < 0 else 0
+                    if self.current_drawdown > banca_atual * 0.5: 
+                        self.send_msg("anomalia", f"Risco de Ruína (Drawdown R${self.current_drawdown:.2f}) na Geração {g}")
+                else:
+                    self.current_drawdown = abs(pior[1]) if pior[1] < 0 else 0
 
                 atualizar_memoria(melhor[0], mem_ativa)
                 if pior[1] < 0: penalizar_jogo(pior[0], mem_ativa)
 
                 self.historico_scores.append(melhor[1])
                 self.historico_media_pop.append(media_pop)
+                self.historico_h14.append(sum(a[5] for a in avaliados))
+                self.historico_h15.append(sum(a[6] for a in avaliados))
                 if len(self.historico_scores) > 100: 
                     self.historico_scores.pop(0); self.historico_media_pop.pop(0)
+                    self.historico_h14.pop(0); self.historico_h15.pop(0)
                 
                 self.send_msg("update_grafico")
 
