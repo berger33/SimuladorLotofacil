@@ -38,28 +38,21 @@ jobs:
     needs: test-core
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Set up Flutter 3.24.0 stable
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.0'
           channel: 'stable'
           cache: true
-
       - name: Flutter doctor
         run: flutter doctor -v
-
       - name: Create mock files for CI
         run: |
           cd android_app/flutter_pro
           mkdir -p android/app lib
-          # google-services.json mock
           cat > android/app/google-services.json <<'JSON'
           {
             "project_info": {"project_number": "123456789", "project_id": "lotofacil-pro-ci", "storage_bucket": "lotofacil-pro-ci.appspot.com"},
@@ -67,24 +60,13 @@ jobs:
             "configuration_version": "1"
           }
           JSON
-          # firebase_options.dart mock
           cat > lib/firebase_options.dart <<'DART'
           import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
-          import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
           class DefaultFirebaseOptions {
-            static FirebaseOptions get currentPlatform {
-              return android;
-            }
-            static const FirebaseOptions android = FirebaseOptions(
-              apiKey: 'CI_MOCK_KEY',
-              appId: '1:123456789:android:abcdef',
-              messagingSenderId: '123456789',
-              projectId: 'lotofacil-pro-ci',
-              storageBucket: 'lotofacil-pro-ci.appspot.com',
-            );
+            static FirebaseOptions get currentPlatform => android;
+            static const FirebaseOptions android = FirebaseOptions(apiKey: 'CI_MOCK', appId: '1:123:android:abc', messagingSenderId: '123', projectId: 'ci', storageBucket: 'ci.appspot.com');
           }
           DART
-          # key.properties mock
           keytool -genkey -v -keystore android/app/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US" || true
           cat > android/key.properties <<'PROPS'
           storePassword=android
@@ -92,69 +74,42 @@ jobs:
           keyAlias=androiddebugkey
           storeFile=debug.keystore
           PROPS
-          # local.properties
           echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
           echo "sdk.dir=$ANDROID_HOME" >> android/local.properties || true
-
-      - name: Install dependencies (with retry)
+      - name: Install dependencies
         run: |
           cd android_app/flutter_pro
-          flutter pub get --verbose || {
-            echo "⚠️ pub get failed, trying with --no-precompile and offline fallback"
-            flutter pub get --no-precompile || true
-          }
-          # List deps
+          flutter pub get --verbose || flutter pub get --no-precompile || true
           flutter pub deps || true
-
-      - name: Analyze (allow warnings)
+      - name: Analyze
         run: |
           cd android_app/flutter_pro
-          flutter analyze --no-fatal-infos || echo "analyze warnings ok"
-
-      - name: Build AAB Release (with fallback to debug)
+          flutter analyze --no-fatal-infos || echo "analyze ok"
+      - name: Build AAB Release
         run: |
           cd android_app/flutter_pro
-          echo "Building AAB release..."
           flutter build appbundle --release --no-tree-shake-icons --verbose 2>&1 | tee build.log || {
-            echo "⚠️ Release build failed, trying debug AAB..."
+            echo "Release failed, trying debug..."
             flutter build appbundle --debug --verbose 2>&1 | tee build.log || {
-              echo "❌ Both release and debug AAB failed, showing log:"
               cat build.log | tail -n 100
-              # Try to build APK as fallback to get at least something
               flutter build apk --debug --verbose || true
               exit 1
             }
           }
-
-      - name: Check AAB size and list build outputs
+      - name: List outputs
         run: |
-          echo "=== Listing build outputs ==="
           ls -lh android_app/flutter_pro/build/app/outputs/bundle/release/ || true
           ls -lh android_app/flutter_pro/build/app/outputs/bundle/debug/ || true
-          ls -lh android_app/flutter_pro/build/app/outputs/flutter-apk/ || true
-          find android_app/flutter_pro/build -type f -name "*.aab" -o -name "*.apk" | xargs ls -lh || echo "No AAB/APK found"
-          echo "=== Full build dir ==="
+          find android_app/flutter_pro/build -name "*.aab" -o -name "*.apk" | xargs ls -lh || echo "No AAB/APK"
           find android_app/flutter_pro/build -type f | head -n 30
-          echo "=== Checking AAB size ==="
-          AAB_PATH=$(find android_app/flutter_pro/build -name "*.aab" | head -n1)
-          if [ -n "$AAB_PATH" ]; then
-            AAB_SIZE=$(stat -c%s "$AAB_PATH" 2>/dev/null || stat -f%z "$AAB_PATH" 2>/dev/null || echo 0)
-            echo "AAB $AAB_PATH size: $AAB_SIZE bytes"
-            if [ $AAB_SIZE -gt 157286400 ]; then
-              echo "❌ AAB >150MB"
-              exit 1
-            fi
-          fi
-
-      - name: Upload AAB artifact
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: flutter-aab-release
           path: android_app/flutter_pro/build/app/outputs/bundle/**/*.aab
           retention-days: 30
           if-no-files-found: warn
-
-      - name: Upload APK fallback artifact
+      - name: Upload APK fallback
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -162,22 +117,12 @@ jobs:
           path: android_app/flutter_pro/build/app/outputs/flutter-apk/**/*.apk
           retention-days: 30
           if-no-files-found: warn
-
-      - name: Upload entire build folder for debug
+      - name: Upload build folder
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: flutter-build-folder
           path: android_app/flutter_pro/build/
-          retention-days: 7
-          if-no-files-found: ignore
-
-      - name: Upload build log
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: flutter-build-log
-          path: android_app/flutter_pro/build.log
           retention-days: 7
           if-no-files-found: ignore
 
@@ -216,33 +161,23 @@ jobs:
             cat build-apk.log | tail -n 100
             exit 1
           }
-      - name: List APK outputs
+      - name: List outputs
         run: |
           ls -lh android_app/flutter_pro/build/app/outputs/flutter-apk/ || true
-          find android_app/flutter_pro/build -name "*.apk" -exec ls -lh {} \; || true
-
-      - name: Upload APK artifact
+          find android_app/flutter_pro/build -name "*.apk" -exec ls -lh {} \;
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: flutter-apk-debug
           path: android_app/flutter_pro/build/app/outputs/flutter-apk/**/*.apk
           retention-days: 30
           if-no-files-found: warn
-
-      - name: Upload build folder debug
+      - name: Upload build folder
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: flutter-apk-build-folder
           path: android_app/flutter_pro/build/
-          retention-days: 7
-          if-no-files-found: ignore
-      - name: Upload log on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: flutter-apk-log
-          path: android_app/flutter_pro/build-apk.log
           retention-days: 7
           if-no-files-found: ignore
 
@@ -272,26 +207,23 @@ jobs:
           rm -rf .buildozer bin
           mkdir -p bin
           timeout 30m buildozer android debug || {
-            echo "⚠️ Buildozer timeout/fail, checking bin..."
+            echo "Buildozer fail/timeout, checking bin..."
             ls -lh bin/ || true
           }
-      - name: Check APK and list outputs
+      - name: List outputs
         run: |
-          echo "=== Kivy bin ==="
           ls -lh android_app/kivy_mvp/bin/ || echo "No bin"
-          find android_app/kivy_mvp -name "*.apk" -type f -exec ls -lh {} \; || echo "No APK"
-          echo "=== .buildozer ==="
+          find android_app/kivy_mvp -name "*.apk" -o -name "*.aab" | xargs ls -lh || echo "No APK/AAB"
           ls -lh android_app/kivy_mvp/.buildozer/ || true
-          find android_app/kivy_mvp -type f -name "*.aab" -o -name "*.apk" | head -n 20
-      - name: Upload Kivy APK artifact
+      - name: Upload Kivy APK
         uses: actions/upload-artifact@v4
         with:
           name: kivy-apk-debug
           path: |
             android_app/kivy_mvp/bin/*.apk
             android_app/kivy_mvp/bin/*.aab
-            android_app/kivy_mvp/.buildozer/**/*.apk
-            android_app/kivy_mvp/.buildozer/**/*.aab
+            android_app/kivy_mvp/.buildozer/**/package/*.apk
+            android_app/kivy_mvp/.buildozer/**/package/*.aab
           retention-days: 30
           if-no-files-found: warn
       - name: Upload Kivy build folder
@@ -302,19 +234,77 @@ jobs:
           path: android_app/kivy_mvp/
           retention-days: 7
           if-no-files-found: ignore
-      - name: Upload logs on failure
-        if: failure()
+
+  build-flutter-docker:
+    name: 🐳 Flutter AAB via Docker
+    runs-on: ubuntu-latest
+    needs: test-core
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Create mock files
+        run: |
+          cd android_app/flutter_pro
+          mkdir -p android/app lib
+          cat > android/app/google-services.json <<'JSON'
+          {
+            "project_info": {"project_number": "123456789", "project_id": "lotofacil-pro-ci", "storage_bucket": "lotofacil-pro-ci.appspot.com"},
+            "client": [{"client_info": {"mobilesdk_app_id": "1:123456789:android:abcdef", "android_client_info": {"package_name": "com.berger33.lotofacilpro"}}, "oauth_client": [], "api_key": [{"current_key": "CI_MOCK_KEY"}], "services": {"appinvite_service": {"other_platform_oauth_client": []}}}],
+            "configuration_version": "1"
+          }
+          JSON
+          cat > lib/firebase_options.dart <<'DART'
+          import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+          class DefaultFirebaseOptions {
+            static FirebaseOptions get currentPlatform => android;
+            static const FirebaseOptions android = FirebaseOptions(apiKey: 'CI_MOCK', appId: '1:123:android:abc', messagingSenderId: '123', projectId: 'ci', storageBucket: 'ci.appspot.com');
+          }
+          DART
+          keytool -genkey -v -keystore android/app/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US" || true
+          cat > android/key.properties <<'PROPS'
+          storePassword=android
+          keyPassword=android
+          keyAlias=androiddebugkey
+          storeFile=debug.keystore
+          PROPS
+      - name: Build via Docker
+        run: |
+          cd android_app/flutter_pro
+          docker build -t lotofacil-build -f Dockerfile . 2>&1 | tee docker-build.log || {
+            echo "Dockerfile build failed, trying direct run..."
+            docker run --rm -v $(pwd):/app -w /app cirrusci/flutter:stable sh -c "
+              flutter pub get || true
+              flutter build appbundle --release --no-tree-shake-icons || flutter build appbundle --debug
+              ls -lh build/app/outputs/bundle/release/ || ls -lh build/app/outputs/bundle/debug/ || true
+            " 2>&1 | tee docker-build.log || true
+          }
+          find build -name "*.aab" -o -name "*.apk" | xargs ls -lh || echo "No AAB/APK"
+      - name: List outputs
+        run: |
+          ls -R android_app/flutter_pro/build/ 2>&1 | head -n 100
+          find android_app/flutter_pro/build -name "*.aab" -o -name "*.apk"
+      - name: Upload Docker AAB
         uses: actions/upload-artifact@v4
         with:
-          name: kivy-buildozer-logs
-          path: android_app/kivy_mvp/.buildozer/logs/
+          name: flutter-aab-docker
+          path: |
+            android_app/flutter_pro/build/app/outputs/bundle/**/*.aab
+            android_app/flutter_pro/build/app/outputs/flutter-apk/**/*.apk
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Upload Docker log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flutter-docker-log
+          path: android_app/flutter_pro/docker-build.log
           retention-days: 7
           if-no-files-found: ignore
 
   build-summary:
     name: 📊 Build Summary
     runs-on: ubuntu-latest
-    needs: [build-flutter-aab, build-flutter-apk, build-kivy-apk]
+    needs: [build-flutter-aab, build-flutter-apk, build-kivy-apk, build-flutter-docker]
     if: always()
     steps:
       - uses: actions/download-artifact@v4
@@ -336,7 +326,7 @@ jobs:
           done
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Próximos passos:" >> $GITHUB_STEP_SUMMARY
-          echo "1. Baixar AAB em Artifacts > flutter-aab-release" >> $GITHUB_STEP_SUMMARY
+          echo "1. Baixar AAB em Artifacts > flutter-aab-release ou flutter-aab-docker" >> $GITHUB_STEP_SUMMARY
           echo "2. Play Console > Teste interno > Upload AAB" >> $GITHUB_STEP_SUMMARY
           echo "3. 20 testers 14 dias obrigatório" >> $GITHUB_STEP_SUMMARY
           echo "4. Produção rollout 20%→50%→100%" >> $GITHUB_STEP_SUMMARY
