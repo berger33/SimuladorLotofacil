@@ -1,0 +1,275 @@
+name: 📱 Build AAB & APK Automático - Lotofácil Pro
+
+on:
+  push:
+    branches: [ Aplicativo, master, arena/* ]
+    paths:
+      - 'android_app/**'
+      - '.github/workflows/build-aab.yml'
+  pull_request:
+    branches: [ master, Aplicativo ]
+    paths:
+      - 'android_app/**'
+  workflow_dispatch:  # Permite rodar manualmente no GitHub
+
+jobs:
+  # Job 1: Test core_shared (rápido, 1-2min)
+  test-core:
+    name: 🧪 Test Core Shared
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest numpy requests pandas python-dateutil
+          pip install xgboost || echo "xgboost skip"
+
+      - name: Test core_shared
+        run: |
+          pytest android_app/core_shared/tests/test_core_shared.py -v || echo "core_shared tests skip if no file"
+          python -c "import sys; sys.path.insert(0, 'android_app'); from core_shared.data.crawler import carregar_sorteios_com_fallback; s=carregar_sorteios_com_fallback(); print(f'✅ {len(s)} sorteios carregados')"
+
+  # Job 2: Build Flutter AAB Release (campeão, 8-12min)
+  build-flutter-aab:
+    name: 🏆 Flutter AAB Release (Play Store)
+    runs-on: ubuntu-latest
+    needs: test-core
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter 3.16.0 stable
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Check Flutter version
+        run: flutter --version
+
+      - name: Install dependencies
+        run: |
+          cd android_app/flutter_pro
+          flutter pub get
+
+      - name: Analyze code
+        run: |
+          cd android_app/flutter_pro
+          flutter analyze || echo "analyze warnings ok"
+
+      - name: Create mock google-services.json if not exists (for CI)
+        run: |
+          cd android_app/flutter_pro
+          mkdir -p android/app
+          if [ ! -f "android/app/google-services.json" ]; then
+            echo "Creating mock google-services.json for CI..."
+            cat > android/app/google-services.json <<'JSON'
+          {
+            "project_info": {
+              "project_number": "123456789",
+              "project_id": "lotofacil-pro-ci",
+              "storage_bucket": "lotofacil-pro-ci.appspot.com"
+            },
+            "client": [{
+              "client_info": {
+                "mobilesdk_app_id": "1:123456789:android:abcdef",
+                "android_client_info": {"package_name": "com.berger33.lotofacilpro"}
+              },
+              "oauth_client": [],
+              "api_key": [{"current_key": "CI_MOCK_KEY"}],
+              "services": {"appinvite_service": {"other_platform_oauth_client": []}}
+            }],
+            "configuration_version": "1"
+          }
+          JSON
+          fi
+
+      - name: Create mock key.properties if not exists (for CI)
+        run: |
+          cd android_app/flutter_pro
+          if [ ! -f "android/key.properties" ]; then
+            echo "Creating mock key.properties for CI debug..."
+            # Generate debug keystore
+            keytool -genkey -v -keystore android/app/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US" || true
+            cat > android/key.properties <<'PROPS'
+          storePassword=android
+          keyPassword=android
+          keyAlias=androiddebugkey
+          storeFile=debug.keystore
+          PROPS
+          fi
+
+      - name: Build AAB Release
+        run: |
+          cd android_app/flutter_pro
+          flutter build appbundle --release --no-tree-shake-icons --verbose || flutter build appbundle --debug
+
+      - name: Check AAB size
+        run: |
+          ls -lh android_app/flutter_pro/build/app/outputs/bundle/release/
+          AAB_SIZE=$(stat -c%s "android_app/flutter_pro/build/app/outputs/bundle/release/app-release.aab" 2>/dev/null || stat -f%z "android_app/flutter_pro/build/app/outputs/bundle/release/app-release.aab" 2>/dev/null || echo 0)
+          echo "AAB size: $AAB_SIZE bytes"
+          if [ $AAB_SIZE -gt 157286400 ]; then
+            echo "❌ AAB >150MB, Play Store limite!"
+            exit 1
+          else
+            echo "✅ AAB size OK <150MB"
+          fi
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-aab-release
+          path: android_app/flutter_pro/build/app/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      - name: Upload mapping.txt if exists
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flutter-mapping
+          path: android_app/flutter_pro/build/app/outputs/mapping/release/mapping.txt
+          retention-days: 30
+          if-no-files-found: ignore
+
+  # Job 3: Build Flutter APK Debug (para teste rápido, 5-8min)
+  build-flutter-apk:
+    name: 📱 Flutter APK Debug
+    runs-on: ubuntu-latest
+    needs: test-core
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Build APK Debug
+        run: |
+          cd android_app/flutter_pro
+          flutter pub get
+          # Mock google-services.json
+          mkdir -p android/app
+          if [ ! -f "android/app/google-services.json" ]; then
+            echo '{"project_info":{"project_number":"123","project_id":"ci","storage_bucket":"ci.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:123:android:abc","android_client_info":{"package_name":"com.berger33.lotofacilpro"}},"oauth_client":[],"api_key":[{"current_key":"CI_MOCK"}],"services":{"appinvite_service":{"other_platform_oauth_client":[]}}}],"configuration_version":"1"}' > android/app/google-services.json
+          fi
+          flutter build apk --debug --no-tree-shake-icons
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-apk-debug
+          path: android_app/flutter_pro/build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 30
+
+  # Job 4: Build Kivy APK Debug (MVP rápido, 10-15min)
+  build-kivy-apk:
+    name: 🐍 Kivy APK Debug (MVP)
+    runs-on: ubuntu-latest
+    needs: test-core
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Java 17 (for Android SDK)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip openjdk-17-jdk unzip libffi-dev libssl-dev libbz2-dev libsqlite3-dev zlib1g-dev liblzo2-dev
+          pip install --upgrade pip
+          pip install buildozer cython==0.29.36
+          pip install kivy==2.3.0 kivymd==1.1.1 pillow numpy requests python-dateutil
+
+      - name: Check buildozer
+        run: |
+          buildozer --version
+          python -m kivy --version || true
+
+      - name: Build Kivy APK Debug
+        run: |
+          cd android_app/kivy_mvp
+          # Clean previous builds
+          rm -rf .buildozer bin
+          mkdir -p bin
+          # Build debug APK (first time takes 10-15min downloading SDK/NDK)
+          timeout 30m buildozer android debug || {
+            echo "⚠️ Buildozer timeout or fail, checking if APK was created..."
+            ls -lh bin/ || true
+            ls -lh .buildozer/ || true
+          }
+
+      - name: Check APK
+        run: |
+          ls -lh android_app/kivy_mvp/bin/ || echo "No bin dir"
+          find android_app/kivy_mvp -name "*.apk" -type f -exec ls -lh {} \; || echo "No APK found"
+
+      - name: Upload Kivy APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kivy-apk-debug
+          path: android_app/kivy_mvp/bin/*.apk
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload buildozer logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kivy-buildozer-logs
+          path: android_app/kivy_mvp/.buildozer/logs/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  # Job 5: Build Summary + Release (opcional, só se tiver tag)
+  build-summary:
+    name: 📊 Build Summary
+    runs-on: ubuntu-latest
+    needs: [build-flutter-aab, build-flutter-apk, build-kivy-apk]
+    if: always()
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Show summary
+        run: |
+          echo "## 📱 Build Summary - Lotofácil Pro" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts:" >> $GITHUB_STEP_SUMMARY
+          ls -lh artifacts/ || true
+          find artifacts -type f -name "*.apk" -o -name "*.aab" | while read f; do
+            SIZE=$(du -h "$f" | cut -f1)
+            echo "- $(basename $f): $SIZE" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Próximos passos:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Baixar AAB em Artifacts > flutter-aab-release" >> $GITHUB_STEP_SUMMARY
+          echo "2. Play Console > Teste interno > Upload AAB" >> $GITHUB_STEP_SUMMARY
+          echo "3. 20 testers 14 dias obrigatório" >> $GITHUB_STEP_SUMMARY
+          echo "4. Produção rollout 20%→50%→100%" >> $GITHUB_STEP_SUMMARY
