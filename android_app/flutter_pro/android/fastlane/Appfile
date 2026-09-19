@@ -1,0 +1,13 @@
+# Appfile - Lotofácil Pro
+# https://docs.fastlane.tools/advanced/#appfile
+
+json_key_file(ENV["SUPPLY_JSON_KEY"] || "play-console-service-account.json") # Path to service account json
+package_name("com.berger33.lotofacilpro") # e.g. com.krausefx.app
+
+# Para criar service account:
+# 1. Play Console > Configuração > Acesso à API > Criar projeto Google Cloud
+# 2. Google Cloud Console > IAM > Service Accounts > Criar
+# 3. Dar permissão: Service Account User + Storage Object Admin
+# 4. Criar chave JSON e baixar como play-console-service-account.json
+# 5. Play Console > Acesso à API > Conceder acesso ao service account
+# 6. Exportar env: export SUPPLY_JSON_KEY=play-console-service-account.json

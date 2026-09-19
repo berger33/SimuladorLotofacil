@@ -1,0 +1,125 @@
+# Fastfile - Lotofácil Pro - Deploy automático Play Store
+# Docs: https://docs.fastlane.tools
+
+default_platform(:android)
+
+platform :android do
+
+  desc "Build AAB release e upload para Teste Interno (20 testers 14 dias obrigatório)"
+  lane :internal do
+    # Incrementa versionCode automaticamente
+    increment_version_code(
+      gradle_file_path: "app/build.gradle"
+    )
+
+    # Build AAB
+    gradle(
+      task: "clean bundle",
+      build_type: "Release",
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"] || "~/lotofacil-upload-keystore.jks",
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEY_ALIAS"] || "upload",
+        "android.injected.signing.key.password" => ENV["KEY_PASSWORD"],
+      }
+    )
+
+    # Upload para Teste Interno
+    supply(
+      track: "internal",
+      aab: "app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      rollout: "1.0",
+    )
+
+    # Notificação Slack opcional
+    # slack(message: "Lotofácil Pro - Nova versão interna publicada! 20 testers 14 dias iniciados.")
+  end
+
+  desc "Promove Teste Interno -> Fechado (100 testers)"
+  lane :closed do
+    supply(
+      track: "internal",
+      track_promote_to: "closed",
+      rollout: "1.0",
+    )
+  end
+
+  desc "Promove Fechado -> Aberto (500 testers)"
+  lane :open do
+    supply(
+      track: "closed",
+      track_promote_to: "open",
+      rollout: "1.0",
+    )
+  end
+
+  desc "Promove para Produção com rollout gradual 20% -> 50% -> 100%"
+  lane :production_20 do
+    supply(
+      track: "open",
+      track_promote_to: "production",
+      rollout: "0.2",
+    )
+  end
+
+  lane :production_50 do
+    supply(
+      track: "production",
+      track_promote_to: "production",
+      rollout: "0.5",
+    )
+  end
+
+  lane :production_100 do
+    supply(
+      track: "production",
+      track_promote_to: "production",
+      rollout: "1.0",
+    )
+  end
+
+  desc "Screenshots automáticos com Fastlane Screengrab"
+  lane :screenshots do
+    # Precisa configurar screengrab
+    # https://docs.fastlane.tools/getting-started/android/screenshots/
+    screengrab(
+      app_package_name: "com.berger33.lotofacilpro",
+      app_apk_path: "app/build/outputs/apk/debug/app-debug.apk",
+      tests_apk_path: "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      locales: ["pt-BR", "en-US"],
+      clear_previous_screenshots: true,
+    )
+  end
+
+  desc "Gera AAB local sem upload (para testar)"
+  lane :build_aab do
+    gradle(
+      task: "clean bundle",
+      build_type: "Release"
+    )
+  end
+
+  desc "Gera APK debug para testes"
+  lane :build_apk do
+    gradle(
+      task: "clean assemble",
+      build_type: "Debug"
+    )
+  end
+end
+
+# Para usar:
+# 1. Instalar fastlane: gem install fastlane
+# 2. Configurar env:
+#    export KEYSTORE_PATH=~/lotofacil-upload-keystore.jks
+#    export KEYSTORE_PASSWORD=SUA_SENHA
+#    export KEY_ALIAS=upload
+#    export KEY_PASSWORD=SUA_SENHA
+#    export SUPPLY_JSON_KEY=play-console-service-account.json (service account Play Console)
+# 3. Rodar:
+#    fastlane internal  # build + upload teste interno
+#    fastlane closed    # promove para fechado
+#    fastlane production_20  # 20% produção
