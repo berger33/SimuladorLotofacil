@@ -126,18 +126,31 @@ jobs:
             }
           }
 
-      - name: Check AAB size
+      - name: Check AAB size and list build outputs
         run: |
-          ls -lh android_app/flutter_pro/build/app/outputs/bundle/release/ || ls -lh android_app/flutter_pro/build/app/outputs/bundle/debug/ || true
-          find android_app/flutter_pro/build -name "*.aab" -o -name "*.apk" | xargs ls -lh || true
+          echo "=== Listing build outputs ==="
+          ls -lh android_app/flutter_pro/build/app/outputs/bundle/release/ || true
+          ls -lh android_app/flutter_pro/build/app/outputs/bundle/debug/ || true
+          ls -lh android_app/flutter_pro/build/app/outputs/flutter-apk/ || true
+          find android_app/flutter_pro/build -type f -name "*.aab" -o -name "*.apk" | xargs ls -lh || echo "No AAB/APK found"
+          echo "=== Full build dir ==="
+          find android_app/flutter_pro/build -type f | head -n 30
+          echo "=== Checking AAB size ==="
+          AAB_PATH=$(find android_app/flutter_pro/build -name "*.aab" | head -n1)
+          if [ -n "$AAB_PATH" ]; then
+            AAB_SIZE=$(stat -c%s "$AAB_PATH" 2>/dev/null || stat -f%z "$AAB_PATH" 2>/dev/null || echo 0)
+            echo "AAB $AAB_PATH size: $AAB_SIZE bytes"
+            if [ $AAB_SIZE -gt 157286400 ]; then
+              echo "❌ AAB >150MB"
+              exit 1
+            fi
+          fi
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: flutter-aab-release
-          path: |
-            android_app/flutter_pro/build/app/outputs/bundle/release/app-release.aab
-            android_app/flutter_pro/build/app/outputs/bundle/debug/app-debug.aab
+          path: android_app/flutter_pro/build/app/outputs/bundle/**/*.aab
           retention-days: 30
           if-no-files-found: warn
 
@@ -146,8 +159,17 @@ jobs:
         if: always()
         with:
           name: flutter-apk-fallback
-          path: android_app/flutter_pro/build/app/outputs/flutter-apk/*.apk
+          path: android_app/flutter_pro/build/app/outputs/flutter-apk/**/*.apk
           retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload entire build folder for debug
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flutter-build-folder
+          path: android_app/flutter_pro/build/
+          retention-days: 7
           if-no-files-found: ignore
 
       - name: Upload build log
@@ -194,12 +216,27 @@ jobs:
             cat build-apk.log | tail -n 100
             exit 1
           }
+      - name: List APK outputs
+        run: |
+          ls -lh android_app/flutter_pro/build/app/outputs/flutter-apk/ || true
+          find android_app/flutter_pro/build -name "*.apk" -exec ls -lh {} \; || true
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: flutter-apk-debug
-          path: android_app/flutter_pro/build/app/outputs/flutter-apk/app-debug.apk
+          path: android_app/flutter_pro/build/app/outputs/flutter-apk/**/*.apk
           retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload build folder debug
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flutter-apk-build-folder
+          path: android_app/flutter_pro/build/
+          retention-days: 7
+          if-no-files-found: ignore
       - name: Upload log on failure
         if: failure()
         uses: actions/upload-artifact@v4
@@ -238,17 +275,33 @@ jobs:
             echo "⚠️ Buildozer timeout/fail, checking bin..."
             ls -lh bin/ || true
           }
-      - name: Check APK
+      - name: Check APK and list outputs
         run: |
+          echo "=== Kivy bin ==="
           ls -lh android_app/kivy_mvp/bin/ || echo "No bin"
           find android_app/kivy_mvp -name "*.apk" -type f -exec ls -lh {} \; || echo "No APK"
+          echo "=== .buildozer ==="
+          ls -lh android_app/kivy_mvp/.buildozer/ || true
+          find android_app/kivy_mvp -type f -name "*.aab" -o -name "*.apk" | head -n 20
       - name: Upload Kivy APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: kivy-apk-debug
-          path: android_app/kivy_mvp/bin/*.apk
+          path: |
+            android_app/kivy_mvp/bin/*.apk
+            android_app/kivy_mvp/bin/*.aab
+            android_app/kivy_mvp/.buildozer/**/*.apk
+            android_app/kivy_mvp/.buildozer/**/*.aab
           retention-days: 30
           if-no-files-found: warn
+      - name: Upload Kivy build folder
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kivy-build-folder
+          path: android_app/kivy_mvp/
+          retention-days: 7
+          if-no-files-found: ignore
       - name: Upload logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
