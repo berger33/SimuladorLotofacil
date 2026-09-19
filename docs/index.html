@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotofácil Pro - IA & Estatística</title>
+    <meta name="description" content="Laboratório de IA para análise estatística da Lotofácil. Ferramenta educacional com Algoritmo Genético e Machine Learning.">
+    <style>
+        :root { --primary: #6F42C1; --secondary: #17A2B8; --tertiary: #FFD700; --dark: #121212; --surface: #1E1E1E; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: var(--dark); color: #E0E0E0; line-height: 1.6; }
+        .hero { background: linear-gradient(135deg, #6F42C1 0%, #4A1A8B 100%); padding: 80px 20px; text-align: center; }
+        .hero h1 { font-size: 3em; margin: 0; font-family: 'Outfit', sans-serif; }
+        .hero p { font-size: 1.2em; opacity: 0.9; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .card { background: var(--surface); border-radius: 16px; padding: 24px; margin: 16px 0; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+        .btn { display: inline-block; background: var(--primary); color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: bold; margin: 8px; }
+        .btn-secondary { background: var(--secondary); }
+        .btn-tertiary { background: var(--tertiary); color: #121212; }
+        h2 { color: var(--primary); font-family: 'Sora', sans-serif; }
+        .badge { display: inline-block; background: var(--tertiary); color: #121212; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: bold; }
+        .disclaimer { background: #2D2D2D; border-left: 4px solid var(--tertiary); padding: 16px; border-radius: 8px; font-size: 0.9em; }
+        footer { text-align: center; padding: 40px; opacity: 0.6; font-size: 0.9em; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700&family=Sora:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="hero">
+        <div style="font-size: 80px;">🚀</div>
+        <h1>Lotofácil Pro</h1>
+        <p>Laboratório de Inteligência Artificial para Análise da Lotofácil</p>
+        <p><span class="badge">Ferramenta Educacional</span> <span class="badge">+18</span> <span class="badge">Não afiliado à Caixa</span></p>
+        <div style="margin-top: 24px;">
+            <a href="https://play.google.com/store/apps/details?id=com.berger33.lotofacilpro" class="btn">📱 Baixar na Play Store (Em Breve)</a>
+            <a href="https://github.com/berger33/SimuladorLotofacil" class="btn btn-secondary">💻 GitHub</a>
+            <a href="#privacy" class="btn btn-tertiary">🔒 Privacidade</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>🎯 O que é?</h2>
+            <p>O Lotofácil Pro não é um gerador aleatório. É um <strong>laboratório de pesquisa</strong> que usa:</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>🧬 Algoritmo Genético</h3>
+                    <p>Populações evoluem, elite cruza e muta. Lucro médio sobe a cada geração.</p>
+                </div>
+                <div class="card">
+                    <h3>🤖 6 IAs</h3>
+                    <p>Atrasômetro, Markov, Ensemble Jedi (XGBoost), Apriori, Auto-Piloto, RL DQN.</p>
+                </div>
+                <div class="card">
+                    <h3>🎯 Fechamento Inteligente</h3>
+                    <p>20 → 15 com filtros relaxáveis, nunca trava.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>✨ Funcionalidades</h2>
+            <ul>
+                <li>📊 Dashboard com gráfico convergência (ECG) Top vs Média</li>
+                <li>🧬 Gerador com Qtd Jogos 10-33, fixas/bloqueadas, 6 filtros, sliders mutação/severidade</li>
+                <li>🧠 Inteligência: 5 abas com heatmap 5x5 sensorial</li>
+                <li>🏆 Ranking Top 50 com detalhes, stress tests (histórico, caos 100k, bootstrap), export CSV/PDF, share WhatsApp</li>
+                <li>👑 Premium: 33 jogos, IA completa, ilimitado, sem ads</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>📱 App Android</h2>
+            <p>Transformação do simulador desktop CustomTkinter para app Android comercial:</p>
+            <ul>
+                <li><strong>Branch Aplicativo:</strong> 84 arquivos, core 100% desacoplado, Flutter Pro produção, Kivy MVP, API FastAPI</li>
+                <li><strong>Stack:</strong> Flutter Material 3 + Hive + Dio + fl_chart + AdMob + IAP + Firebase</li>
+                <li><strong>Core:</strong> 3675 sorteios Caixa, MotorLite com Sharpe, testes 9/9 passando</li>
+                <li><strong>Assets:</strong> Ícone 512, feature 1024x500, 8 screenshots 1080x1920 gerados com IA</li>
+            </ul>
+            <a href="https://github.com/berger33/SimuladorLotofacil/tree/Aplicativo" class="btn">Ver Branch Aplicativo</a>
+        </div>
+
+        <div class="card" id="privacy">
+            <h2>🔒 Privacidade</h2>
+            <p><a href="privacy.html" class="btn btn-secondary">Ver Política Completa</a> <a href="terms.html" class="btn">Termos</a></p>
+            <p><strong>Resumo:</strong> Coletamos ID dispositivo para ads, analytics anonimizado, crash logs. Não coletamos nome, email, localização. Compartilhamos com Google Firebase/AdMob. Você pode deletar dados no app.</p>
+        </div>
+
+        <div class="disclaimer">
+            <strong>⚠️ AVISO LEGAL IMPORTANTE:</strong> Este aplicativo é uma ferramenta de análise estatística e simulação educacional. Não é afiliado à Caixa Econômica Federal. Loteria é jogo de azar com resultados independentes. Este app não garante prêmios ou lucros. Jogue com responsabilidade. +18. Se você tem problemas com jogo, procure ajuda: <a href="https://www.jogoresponsavel.org.br" style="color: var(--tertiary);">www.jogoresponsavel.org.br</a>
+        </div>
+
+        <div class="card">
+            <h2>📚 Documentação</h2>
+            <ul>
+                <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/ANALISE_COMPLETA.md" style="color: var(--secondary);">Análise Completa do Sistema Atual</a></li>
+                <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/PLANO_APP_ANDROID.md" style="color: var(--secondary);">Plano 8 Semanas Android</a></li>
+                <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/ARQUITETURA_TECNICA.md" style="color: var(--secondary);">Arquitetura Técnica</a></li>
+                <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/MONETIZACAO_PLAYSTORE.md" style="color: var(--secondary);">Monetização Play Store</a></li>
+                <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/android_app/PROXIMOS_PASSOS_PLAYSTORE.md" style="color: var(--secondary);">Próximos Passos Play Store</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Desenvolvido com ☕ e IA Avançada • Lotofácil Pro 1.0.0 (Aplicativo) • Branch Aplicativo</p>
+        <p>Não afiliado à Caixa • Ferramenta educacional • +18 • <a href="https://github.com/berger33/SimuladorLotofacil" style="color: var(--secondary);">GitHub</a> • <a href="privacy.html" style="color: var(--secondary);">Privacidade</a> • <a href="terms.html" style="color: var(--secondary);">Termos</a></p>
+    </footer>
+</body>
+</html>
