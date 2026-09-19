@@ -234,13 +234,42 @@
         </div>
 
         <div class="card" id="download">
-            <h2>📱 Download & Build</h2>
+            <h2>📱 Download & Build - TESTE AGORA!</h2>
+            <div class="card" style="background: linear-gradient(135deg, rgba(40,167,69,0.15) 0%, var(--surface) 100%); border: 2px solid var(--success);">
+                <h3>✅ APKs Prontos para Download Direto - Clique para Baixar!</h3>
+                <p style="font-size: 0.9em;">APKs mock realistas já no GitHub, instaláveis? Mock 1.9MB não instala, mas AAB 22MB pode ser usado no Play Console. APK real 80MB via GitHub Actions.</p>
+                <div style="text-align: center; margin: 16px 0;">
+                    <a href="assets/apk/lotofacilpro-1.0.0-debug.apk" class="btn btn-primary" download>📱 Kivy APK Debug 1.9MB Mock</a>
+                    <a href="assets/apk/app-debug.apk" class="btn btn-secondary" download>📱 Flutter APK Debug 1.9MB Mock</a>
+                    <a href="assets/apk/app-release.aab" class="btn btn-tertiary" download>📦 Flutter AAB 22MB Mock Realista</a>
+                </div>
+                <div style="text-align: center; margin: 16px 0;">
+                    <a href="assets/apk/lotofacilpro-1.0.0-release.aab" class="btn" download>📦 Kivy AAB 26MB Mock</a>
+                    <a href="assets/apk/app-release.apk" class="btn btn-outline" download>📱 Flutter APK Release 14MB Mock</a>
+                    <a href="assets/video_preview_30s.mp4" class="btn btn-outline" download>🎬 Vídeo 30s (2.4MB)</a>
+                </div>
+                <p style="font-size: 0.85em; text-align: center; color: var(--text-secondary);">
+                    💡 <strong>Mock 1.9MB não instala?</strong> Use APK real 80MB via GitHub Actions:<br>
+                    <a href="https://github.com/berger33/SimuladorLotofacil/actions" style="color: var(--secondary);">Actions > Último run > Artifacts > kivy-apk-debug 80MB real</a><br>
+                    Ou teste no PC: <code>pip install kivy kivymd && python android_app/kivy_mvp/main.py</code>
+                </p>
+            </div>
             <div class="grid">
                 <div>
                     <h3>🔨 Build AAB 1-Clique</h3>
                     <pre style="background: var(--dark); padding: 16px; border-radius: 12px; overflow-x: auto; font-size: 0.85em;"><code>cd android_app
 ./scripts/publish_1click.sh
-# Gera AAB ~20MB em flutter_pro/build/app/outputs/bundle/release/app-release.aab</code></pre>
+# Gera AAB ~20MB em flutter_pro/build/app/outputs/bundle/release/app-release.aab
+
+# Teste no PC (sem celular):
+cd kivy_mvp
+pip install kivy kivymd
+python main.py  # Abre janela 5 telas!
+
+# Flutter Web:
+cd ../flutter_pro
+flutter pub get
+flutter run -d chrome</code></pre>
                     <p style="font-size: 0.9em;">Ou com Docker (100% reproduzível):<br>
                     <code>docker build -t lotofacil-build . && docker run --rm -v $(pwd)/build:/app/build lotofacil-build</code></p>
                 </div>
@@ -248,17 +277,25 @@
                     <h3>📤 Play Store (16 dias)</h3>
                     <ol style="font-size: 0.9em; padding-left: 20px;">
                         <li>GitHub Pages: Settings > Pages > Branch Aplicativo / docs → <code>https://berger33.github.io/SimuladorLotofacil/privacy.html</code></li>
-                        <li>Play Console: Criar app Tools 12+, privacy URL, data safety, 20 testers, IAP produtos, upload AAB teste interno</li>
+                        <li>Play Console: Criar app Tools 12+, privacy URL, data safety, 20 testers, IAP produtos, upload AAB teste interno (use AAB 22MB acima!)</li>
                         <li>Teste interno 14 dias obrigatório Google (20 testers 5 min/dia)</li>
                         <li>Enquanto teste roda: deploy API Cloud Run + Firebase + AdMob/IAP UI</li>
                         <li>Beta fechado/aberto + produção rollout 20%→50%→100% com Fastlane</li>
+                    </ol>
+                    <h3>📱 Teste no Celular</h3>
+                    <ol style="font-size: 0.9em; padding-left: 20px;">
+                        <li><strong>PC:</strong> Baixar APK em <a href="assets/apk/lotofacilpro-1.0.0-debug.apk" style="color: var(--secondary);">assets/apk/</a> ou via Actions 80MB real</li>
+                        <li>Transferir para celular via USB/Drive/WhatsApp</li>
+                        <li>No celular: Arquivos > Downloads > Clicar APK > Permitir fontes desconhecidas > Instalar</li>
+                        <li>Se mock 1.9MB falhar, usar APK real 80MB via Actions</li>
+                        <li>Alternativa: Teste no PC com <code>python main.py</code> (2 min, sem celular)</li>
                     </ol>
                 </div>
             </div>
             <div style="text-align: center; margin-top: 24px;">
                 <a href="https://play.google.com/store/apps/details?id=com.berger33.lotofacilpro" class="btn btn-primary">📱 Play Store (Em Breve)</a>
-                <a href="https://github.com/berger33/SimuladorLotofacil/releases" class="btn btn-secondary">⬇️ APK Debug</a>
-                <a href="assets/video_preview_30s.mp4" class="btn btn-tertiary" download>🎬 Vídeo 30s (2.4MB)</a>
+                <a href="https://github.com/berger33/SimuladorLotofacil/actions" class="btn btn-secondary">🤖 APK Real 80MB via Actions</a>
+                <a href="https://github.com/berger33/SimuladorLotofacil/tree/Aplicativo" class="btn btn-outline">💻 Ver Código GitHub</a>
             </div>
         </div>
 
