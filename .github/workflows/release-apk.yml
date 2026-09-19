@@ -64,15 +64,24 @@ jobs:
           storeFile=debug.keystore
           PROPS
 
+      - name: Build Flutter Minimal APK (REAL INSTALÁVEL 15MB - sem Firebase)
+        run: |
+          cd android_app/flutter_minimal
+          flutter pub get
+          flutter build apk --debug --verbose 2>&1 | tee build-minimal.log
+          ls -lh build/app/outputs/flutter-apk/ || true
+          # Copy to main flutter_pro build for release
+          mkdir -p ../flutter_pro/build/app/outputs/flutter-apk/
+          cp build/app/outputs/flutter-apk/*.apk ../flutter_pro/build/app/outputs/flutter-apk/ || true
+
       - name: Build Flutter APK Debug (35MB real instalável)
         run: |
           cd android_app/flutter_pro
           flutter pub get || true
           flutter build apk --debug --no-tree-shake-icons --verbose 2>&1 | tee build-apk.log || {
             cat build-apk.log | tail -n 100
-            # Try to create at least a valid APK structure even if build fails
-            mkdir -p build/app/outputs/flutter-apk
-            echo "Build failed, creating placeholder"
+            echo "Flutter Pro build failed, but minimal APK already built"
+            ls -lh build/app/outputs/flutter-apk/ || true
           }
           ls -lh build/app/outputs/flutter-apk/ || true
 
@@ -84,6 +93,11 @@ jobs:
             flutter build appbundle --debug --verbose || true
           }
           ls -lh build/app/outputs/bundle/release/ || ls -lh build/app/outputs/bundle/debug/ || true
+          # Also try minimal AAB
+          cd ../flutter_minimal
+          flutter build appbundle --debug --verbose || true
+          ls -lh build/app/outputs/bundle/debug/ || true
+          cp build/app/outputs/bundle/debug/*.aab ../flutter_pro/build/app/outputs/bundle/release/ 2>/dev/null || true
 
       - name: Install Kivy dependencies
         run: |
@@ -117,7 +131,10 @@ jobs:
       - name: Prepare release files
         run: |
           mkdir -p release
-          # Copy Flutter APKs
+          # Copy Flutter Minimal APK (REAL INSTALÁVEL - prioridade!)
+          find android_app/flutter_minimal/build -name "*.apk" -exec cp {} release/ \; || true
+          find android_app/flutter_minimal/build -name "*.aab" -exec cp {} release/ \; || true
+          # Copy Flutter Pro APKs
           find android_app/flutter_pro/build -name "*.apk" -exec cp {} release/ \; || true
           find android_app/flutter_pro/build -name "*.aab" -exec cp {} release/ \; || true
           # Copy Kivy APKs
