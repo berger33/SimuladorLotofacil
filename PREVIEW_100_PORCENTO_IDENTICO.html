@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lotofácil Pro - Preview 100% Idêntico</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0F;
+  --bg2:#12121A;
+  --card:#1A1D29;
+  --card2:#1E202E;
+  --card3:#222538;
+  --border:#2D2D3F;
+  --border2:#3F3F5A;
+  --primary:#7C3AED;
+  --primary-light:#8B5CF6;
+  --primary-lighter:#A855F7;
+  --primary-dark:#5B21B6;
+  --primary-darker:#4C1D95;
+  --success:#10B981;
+  --success-light:#22C55E;
+  --blue:#0EA5E9;
+  --blue-light:#06B6D4;
+  --red:#EF4444;
+  --orange:#F97316;
+  --yellow:#EAB308;
+  --gold:#FFD700;
+  --text:#FFFFFF;
+  --text2:#9CA3AF;
+  --text3:#6B7280;
+  --gradient-top:linear-gradient(135deg,#7C3AED 0%,#6D28D9 30%,#4C1D95 70%,#1E1B4B 100%);
+  --gradient-premium:linear-gradient(135deg,#1A1A2E 0%,#0F0F1A 100%);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;overflow-x:hidden}
+.phone{
+  width:390px;
+  height:844px;
+  background:var(--bg);
+  border-radius:40px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 0 0 12px #1a1a1a,0 0 0 14px #000,0 30px 80px rgba(0,0,0,0.8);
+  display:flex;
+  flex-direction:column;
+}
+@media(max-width:420px){
+  body{padding:0}
+  .phone{width:100vw;height:100vh;border-radius:0;box-shadow:none}
+}
+.status-bar{
+  height:44px;
+  background:var(--bg);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 24px;
+  font-size:15px;
+  font-weight:600;
+  color:var(--text);
+  z-index:10;
+}
+.status-bar .right{display:flex;gap:6px;align-items:center}
+.screen{display:none;flex:1;overflow-y:auto;overflow-x:hidden;background:var(--bg);position:relative}
+.screen.active{display:flex;flex-direction:column}
+.screen::-webkit-scrollbar{display:none}
+.topbar{
+  height:56px;
+  display:flex;
+  align-items:center;
+  padding:0 16px;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+.topbar .menu{width:24px;height:24px;display:flex;flex-direction:column;justify-content:center;gap:5px;cursor:pointer}
+.topbar .menu span{height:2px;background:var(--text);border-radius:2px;display:block}
+.topbar .menu span:nth-child(1){width:20px}
+.topbar .menu span:nth-child(2){width:14px}
+.topbar .menu span:nth-child(3){width:20px}
+.topbar .title{margin-left:12px;font-weight:700;font-size:18px;color:var(--text);flex:1}
+.topbar .title b{color:var(--primary-light)}
+.topbar .icon-btn{width:36px;height:36px;border-radius:10px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2)}
+/* Dashboard */
+.dashboard-content{padding:12px 16px 100px;display:flex;flex-direction:column;gap:16px}
+.card-topscore{
+  background:var(--gradient-top);
+  border-radius:20px;
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
+}
+.card-topscore::before{
+  content:'';
+  position:absolute;
+  top:-50%;left:-30%;width:80%;height:200%;
+  background:radial-gradient(ellipse at center,rgba(255,255,255,0.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+.card-topscore .left{display:flex;align-items:center;gap:14px}
+.card-topscore .trophy{
+  width:56px;height:56px;
+  background:rgba(255,255,255,0.15);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;
+  backdrop-filter:blur(10px);
+}
+.card-topscore .info .label{font-size:11px;letter-spacing:1px;color:rgba(255,255,255,0.7);font-weight:600}
+.card-topscore .info .value{font-size:24px;font-weight:800;color:#fff;margin:2px 0}
+.card-topscore .info .badge{background:rgba(139,92,246,0.3);border:1px solid rgba(139,92,246,0.5);color:#C4B5FD;font-size:10px;padding:3px 8px;border-radius:12px;display:inline-block;font-weight:600}
+.card-topscore .right{text-align:right;border-left:1px solid rgba(255,255,255,0.15);padding-left:20px;margin-left:10px}
+.card-topscore .right .label{font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.5px}
+.card-topscore .right .gen{font-size:28px;font-weight:800;color:#fff}
+.card-topscore .right .badge2{background:rgba(139,92,246,0.4);color:#DDD6FE;font-size:10px;padding:3px 8px;border-radius:10px;margin-top:4px;display:inline-block}
+.card-conv{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+}
+.card-conv .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-conv .header h3{font-size:12px;font-weight:700;letter-spacing:0.5px;color:var(--text)}
+.card-conv .dropdown{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px;cursor:pointer}
+.chart-wrap{height:160px;position:relative}
+canvas.chart{width:100%;height:100%}
+.legend{display:flex;justify-content:center;gap:20px;margin-top:8px}
+.legend .item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)}
+.legend .dot{width:18px;height:3px;border-radius:2px}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(min-width:400px){.stats-row{grid-template-columns:1fr 1fr 1fr 1fr}}
+.stat-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+}
+.stat-card .top{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.stat-card .top .ico{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.stat-card .val{font-size:16px;font-weight:700;color:var(--text)}
+.stat-card .sub{font-size:10px;color:var(--text2);margin-top:2px}
+.stat-card .sub.purple{color:var(--primary-light)}
+.stat-card .sub.green{color:var(--success-light)}
+.stat-card .sub.blue{color:var(--blue-light)}
+.card-ultimo{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+}
+.card-ultimo .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-ultimo .header h3{font-size:11px;font-weight:700;letter-spacing:0.5px}
+.card-ultimo .header .meta{font-size:10px;color:var(--text2);display:flex;gap:12px;align-items:center}
+.bolas{display:flex;flex-wrap:wrap;gap:6px}
+.bola{width:28px;height:28px;background:var(--primary-dark);border:1px solid var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.card-anomalias{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+}
+.card-anomalias h3{font-size:11px;font-weight:700;margin-bottom:12px;letter-spacing:0.5px}
+.anom-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  margin-bottom:8px;
+}
+.anom-row:last-child{margin:0}
+.anom-row .ico{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.anom-row .txt{flex:1}
+.anom-row .txt .t{font-size:12px;font-weight:500;color:var(--text)}
+.anom-row .txt .d{font-size:10px;color:var(--text2);margin-top:2px}
+.anom-row .badge{font-size:9px;font-weight:700;padding:4px 10px;border-radius:12px;border:1px solid}
+.badge-alta{color:var(--red);border-color:var(--red);background:rgba(239,68,68,0.1)}
+.badge-media{color:var(--orange);border-color:var(--orange);background:rgba(249,115,22,0.1)}
+.badge-baixa{color:var(--blue);border-color:var(--blue);background:rgba(14,165,233,0.1)}
+.card-heatmap{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+}
+.card-heatmap h3{font-size:11px;font-weight:700;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.grid-5x5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.cell{
+  height:36px;
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;
+  cursor:pointer;transition:transform 0.1s;
+}
+.cell:active{transform:scale(0.95)}
+.cell.fria{background:#1E3A8A}
+.cell.fria2{background:#2563EB}
+.cell.media{background:#3730A3}
+.cell.media2{background:#6D28D9}
+.cell.quente{background:#FB923C}
+.cell.muito-quente{background:#EF4444}
+.legend-heat{display:flex;align-items:center;gap:12px;margin-top:10px;font-size:9px;color:var(--text2)}
+.bar-vert{width:8px;height:60px;background:linear-gradient(to top,#EF4444 0%,#FB923C 30%,#3B82F6 70%,#1E3A8A 100%);border-radius:4px}
+/* Gerador */
+.gerador-content{padding:12px 16px 100px;display:flex;flex-direction:column;gap:12px}
+.section-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+}
+.section-card .sec-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:0.8px;
+  color:var(--primary-light);margin-bottom:12px;
+}
+.segmented{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+.seg-btn{
+  padding:10px 4px;
+  text-align:center;
+  cursor:pointer;
+  border-right:1px solid var(--border);
+  transition:all 0.2s;
+}
+.seg-btn:last-child{border:0}
+.seg-btn .n{font-size:14px;font-weight:700;color:var(--text)}
+.seg-btn .l{font-size:10px;color:var(--text2);margin-top:2px}
+.seg-btn.active{background:var(--primary);border-color:var(--primary)}
+.seg-btn.active .n,.seg-btn.active .l{color:#fff}
+.row-dna{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dna-col{border-right:1px solid var(--border);padding-right:12px}
+.dna-col:last-child{border:0;padding:0}
+.dna-label{font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.dna-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  min-width:32px;height:32px;
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+  cursor:pointer;
+}
+.chip.fixa{background:#065F46;border:1px solid #10B981;color:#6EE7B7}
+.chip.bloq{background:#7F1D1D;border:1px solid #EF4444;color:#FCA5A5}
+.filtros-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.filtro-chip{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 14px;
+  border-radius:20px;
+  border:1px solid var(--primary);
+  background:rgba(124,58,237,0.1);
+  color:var(--primary-light);
+  font-size:12px;font-weight:600;
+  cursor:pointer;
+}
+.filtro-chip.inactive{border-color:var(--border);background:transparent;color:var(--text2)}
+.filtro-chip .check{width:14px;height:14px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff}
+.slider-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.slider-row .label{font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px}
+.slider-row .val{font-size:12px;color:var(--text2);font-weight:600}
+.slider{width:100%;height:6px;background:var(--border);border-radius:3px;position:relative;cursor:pointer}
+.slider-fill{height:100%;background:var(--primary);border-radius:3px;position:relative}
+.slider-thumb{width:18px;height:18px;background:#fff;border:3px solid var(--primary);border-radius:50%;position:absolute;top:50%;transform:translate(-50%,-50%);box-shadow:0 2px 6px rgba(0,0,0,0.3)}
+.toggles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toggle-item{display:flex;justify-content:space-between;align-items:center}
+.toggle-item .label{font-size:12px;color:var(--text);display:flex;align-items:center;gap:6px}
+.toggle{width:44px;height:26px;background:var(--border);border-radius:13px;position:relative;cursor:pointer;transition:0.2s}
+.toggle.on{background:var(--primary)}
+.toggle-thumb{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.toggle.on .toggle-thumb{left:21px}
+.estrategias{display:flex;flex-direction:column}
+.est-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.est-row:last-child{border:0}
+.est-row .ico{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.est-row .txt{flex:1}
+.est-row .txt .t{font-size:13px;font-weight:600;color:var(--text)}
+.est-row .txt .d{font-size:11px;color:var(--text2);margin-top:2px}
+.btn-motor{
+  background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  color:#fff;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:0.5px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(124,58,237,0.3);
+  transition:transform 0.1s;
+}
+.btn-motor:active{transform:scale(0.98)}
+/* Inteligencia */
+.intel-content{padding:12px 16px 100px;display:flex;flex-direction:column;gap:14px}
+.intel-hero{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  display:flex;
+  gap:14px;
+  position:relative;
+  overflow:hidden;
+}
+.intel-hero .brain{
+  width:110px;height:110px;
+  background:radial-gradient(ellipse at center,#7C3AED 0%,#1E1B4B 70%);
+  border-radius:20px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:50px;
+  flex-shrink:0;
+  position:relative;
+}
+.intel-hero .brain::after{
+  content:'';
+  position:absolute;
+  bottom:-10px;left:10%;right:10%;height:20px;
+  background:radial-gradient(ellipse,#7C3AED 0%,transparent 70%);
+  opacity:0.5;
+}
+.intel-hero .txt h2{font-size:16px;font-weight:800;color:var(--primary-light);margin-bottom:6px}
+.intel-hero .txt p{font-size:11px;color:var(--text2);line-height:1.5}
+.intel-badges{display:flex;gap:8px;margin-top:10px}
+.intel-badge{
+  display:flex;align-items:center;gap:4px;
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:5px 8px;
+  font-size:10px;color:var(--text2);
+}
+.top5-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+}
+.top5-card .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.top5-card .header h3{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--primary-light);letter-spacing:0.5px}
+.top5-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.top5-row:last-child{margin:0}
+.top5-row .pos{font-size:12px;font-weight:700;color:var(--text2);width:20px}
+.top5-row .num{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff}
+.top5-row .bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.top5-row .bar-fill{height:100%;background:var(--primary);border-radius:3px}
+.top5-row .pts{font-size:12px;font-weight:600;color:var(--blue-light);min-width:60px;text-align:right}
+.top5-row .star{color:var(--primary-light);font-size:16px;cursor:pointer}
+/* Ranking */
+.ranking-content{padding:0 0 100px}
+.rank-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin:10px 12px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+  transition:transform 0.1s;
+}
+.rank-card:active{transform:scale(0.98)}
+.rank-pos{
+  width:44px;height:44px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;
+  flex-shrink:0;
+  position:relative;
+}
+.rank-pos.gold{background:linear-gradient(135deg,#FFD700,#FFA500);color:#000;box-shadow:0 0 15px rgba(255,215,0,0.5)}
+.rank-pos.silver{background:linear-gradient(135deg,#C0C0C0,#A8A8A8);color:#000}
+.rank-pos.bronze{background:linear-gradient(135deg,#CD7F32,#A0522D);color:#fff}
+.rank-pos.normal{border:1.5px solid var(--primary);color:var(--text)}
+.rank-pos .crown{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:12px}
+.rank-info{flex:1;min-width:0}
+.rank-info .score-row{display:flex;align-items:center;gap:8px}
+.rank-info .score{font-size:18px;font-weight:800;color:var(--text)}
+.rank-info .g{font-size:10px;font-weight:700;background:var(--primary-dark);color:var(--primary-light);padding:2px 6px;border-radius:6px}
+.rank-info .base{font-size:11px;color:var(--text2);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-chips{display:flex;gap:4px;margin-top:6px}
+.rank-chip{width:26px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.rank-chip.c11{background:var(--red)}
+.rank-chip.c12{background:var(--orange)}
+.rank-chip.c13{background:var(--yellow);color:#000}
+.rank-chip.c14{background:var(--success)}
+.rank-chip.c15{background:var(--blue)}
+.rank-actions{display:flex;flex-direction:column;gap:8px;align-items:center}
+.rank-star{font-size:18px;color:var(--primary-light);cursor:pointer}
+.rank-arrow{color:var(--text3)}
+.bottom-tabs{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:80px;
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  padding-bottom:10px;
+  z-index:10;
+}
+.tab{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;
+  color:var(--text3);
+  font-size:10px;
+  font-weight:500;
+  transition:color 0.2s;
+  min-width:50px;
+}
+.tab.active{color:var(--primary-light)}
+.tab .ico{font-size:20px}
+.tab.active .ico{filter:drop-shadow(0 0 6px var(--primary))}
+.tab-premium{width:100%;background:var(--primary);height:56px;display:flex;align-items:center;justify-content:space-around;color:#fff;border-radius:0}
+.tab-premium .tab{color:rgba(255,255,255,0.7)}
+.tab-premium .tab.active{color:#fff}
+.tab-premium .tab.active::after{content:'';width:24px;height:3px;background:#fff;border-radius:2px;margin-top:4px;display:block}
+/* Detalhes modal */
+.modal-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(10px);
+  z-index:20;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+}
+.modal-overlay.active{display:flex}
+.modal{
+  background:var(--card);
+  border-radius:20px 20px 0 0;
+  width:100%;
+  max-height:90%;
+  overflow-y:auto;
+  border:1px solid var(--border);
+  border-bottom:none;
+}
+.modal-header{
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  background:var(--card);
+  z-index:2;
+}
+.modal-header .drag{width:36px;height:4px;background:var(--border2);border-radius:2px;position:absolute;top:8px;left:50%;transform:translateX(-50%)}
+.modal-body{padding:16px}
+.pos-badge{
+  width:80px;height:80px;
+  background:linear-gradient(135deg,#FFD700,#FFA500);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;font-weight:800;color:#000;
+  position:relative;
+  box-shadow:0 0 20px rgba(255,215,0,0.5);
+  border:3px solid #FFD700;
+}
+.pos-badge::before{
+  content:'POSIÇÃO';
+  position:absolute;
+  bottom:-10px;
+  left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(135deg,#FFD700,#FFA500);
+  color:#000;
+  font-size:9px;
+  font-weight:800;
+  padding:4px 10px;
+  border-radius:10px;
+  white-space:nowrap;
+}
+.wreath{font-size:40px;position:absolute;top:50%;transform:translateY(-50%)}
+.wreath.left{left:-18px}
+.wreath.right{right:-18px;transform:translateY(-50%) scaleX(-1)}
+.dezenas-ouro{
+  display:grid;
+  grid-template-columns:repeat(9,1fr);
+  gap:6px;
+  background:var(--card2);
+  border:1px solid var(--primary-dark);
+  border-radius:12px;
+  padding:12px;
+}
+.dez-ouro{
+  width:100%;
+  aspect-ratio:1;
+  background:var(--primary-dark);
+  border:1px solid var(--primary);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#fff;
+}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}
+.stat-mini{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 6px;
+  text-align:center;
+}
+.stat-mini .ico{font-size:18px;margin-bottom:4px}
+.stat-mini .label{font-size:9px;color:var(--text2)}
+.stat-mini .val{font-size:14px;font-weight:800;color:var(--text);margin-top:2px}
+.stat-mini .sub{font-size:9px;color:var(--text2);margin-top:2px}
+.apostas-list{background:var(--card2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.aposta-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 12px;
+  border-bottom:1px solid var(--border);
+}
+.aposta-row:last-child{border:0}
+.aposta-row .label{font-size:11px;font-weight:700;color:var(--primary-light)}
+.aposta-row .nums{font-size:11px;color:var(--text);flex:1;margin:0 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btns-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0}
+.btn-outline{
+  background:transparent;
+  border:1px solid var(--primary);
+  color:var(--primary-light);
+  border-radius:10px;
+  padding:10px;
+  font-size:11px;
+  font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;
+}
+.btn-whats{
+  background:var(--success);
+  border:none;
+  color:#fff;
+  border-radius:12px;
+  padding:14px;
+  font-size:13px;
+  font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  cursor:pointer;
+  width:100%;
+}
+.privacy{font-size:9px;color:var(--text3);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px}
+/* Premium */
+.premium-content{padding:16px 16px 100px;display:flex;flex-direction:column;gap:16px}
+.premium-hero{
+  background:linear-gradient(180deg,#1A1A2E 0%,#0F0F1A 100%);
+  border-radius:16px;
+  padding:24px 16px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  border:1px solid var(--border);
+}
+.premium-hero::before{
+  content:'';
+  position:absolute;
+  top:-50%;left:-50%;right:-50%;height:100%;
+  background:radial-gradient(ellipse at top,#FFD700 0%,transparent 60%);
+  opacity:0.15;
+  pointer-events:none;
+}
+.premium-hero .crown{font-size:40px;margin-bottom:8px;display:block}
+.premium-hero h1{font-size:32px;font-weight:800;background:linear-gradient(135deg,#FFD700,#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.premium-hero h2{font-size:14px;color:var(--text);margin-top:4px}
+.premium-hero h2 b{color:var(--gold)}
+.premium-hero p{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.4}
+.compare-table{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+.compare-header{display:grid;grid-template-columns:2fr 1fr 1fr;padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700}
+.compare-header .free{color:var(--text2);text-align:center}
+.compare-header .pro{color:var(--gold);text-align:center}
+.compare-row{display:grid;grid-template-columns:2fr 1fr 1fr;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center;font-size:12px}
+.compare-row:last-child{border:0}
+.compare-row .feat{display:flex;align-items:center;gap:8px;color:var(--text2)}
+.compare-row .feat .ico{color:var(--primary-light)}
+.compare-row .val{text-align:center;color:var(--text2)}
+.compare-row .val.pro{color:var(--gold);font-weight:700}
+.compare-row .check{width:20px;height:20px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:12px;font-weight:800;margin:0 auto}
+.price-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.price-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 10px;
+  text-align:center;
+  position:relative;
+}
+.price-card.popular{border-color:var(--primary);box-shadow:0 0 20px rgba(124,58,237,0.2)}
+.price-card.popular::before{
+  content:'⭐ MAIS POPULAR';
+  position:absolute;
+  top:-10px;left:50%;transform:translateX(-50%);
+  background:var(--primary);
+  color:#fff;
+  font-size:8px;
+  font-weight:700;
+  padding:4px 8px;
+  border-radius:10px;
+  white-space:nowrap;
+}
+.price-card .off{position:absolute;top:8px;left:8px;background:var(--gold);color:#000;font-size:8px;font-weight:800;padding:2px 6px;border-radius:6px}
+.price-card .name{font-size:14px;font-weight:800;color:var(--gold);margin-top:4px}
+.price-card .name.purple{color:var(--primary-light)}
+.price-card .sub{font-size:10px;color:var(--text2);margin-top:2px}
+.price-card .price{margin:12px 0}
+.price-card .price .r{font-size:14px;font-weight:700;color:var(--text)}
+.price-card .price .v{font-size:28px;font-weight:800;color:var(--text)}
+.price-card .price .c{font-size:12px;color:var(--text2)}
+.price-card ul{list-style:none;text-align:left;margin-top:10px}
+.price-card ul li{font-size:9px;color:var(--text2);display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.price-card ul li .ck{width:14px;height:14px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:8px;flex-shrink:0}
+.price-card ul li .ck.purple{background:var(--primary);color:#fff}
+.btn-premium-cta{
+  background:var(--primary);
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  color:#fff;
+  font-size:15px;
+  font-weight:800;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  cursor:pointer;
+  width:100%;
+  box-shadow:0 8px 20px rgba(124,58,237,0.3);
+}
+.secure-row{display:flex;justify-content:space-around;margin-top:12px}
+.secure-item{display:flex;align-items:center;gap:8px;font-size:9px;color:var(--text2)}
+.secure-item .ico{width:28px;height:28px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--primary-light)}
+/* Onboarding */
+.onboard-content{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 24px 100px;
+  text-align:center;
+}
+.onboard-logo{
+  display:flex;align-items:center;gap:8px;margin-bottom:60px;
+}
+.onboard-logo .clover{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.onboard-logo .txt{font-size:18px;font-weight:800;color:var(--text)}
+.onboard-logo .txt b{color:var(--primary-light)}
+.onboard-rocket{font-size:80px;margin-bottom:30px;filter:drop-shadow(0 10px 30px rgba(124,58,237,0.5))}
+.onboard-title{font-size:28px;font-weight:800;color:var(--text);margin-bottom:12px}
+.onboard-title b{color:var(--primary-light)}
+.onboard-sub{font-size:14px;color:var(--text2);line-height:1.5;max-width:280px}
+.onboard-dots{display:flex;gap:8px;margin:30px 0 10px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border2)}
+.dot.active{background:var(--primary);width:16px}
+.onboard-page{font-size:14px;color:var(--text2);margin-bottom:30px}
+.btn-onboard{
+  background:var(--primary);
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  color:#fff;
+  font-size:15px;
+  font-weight:700;
+  width:100%;
+  max-width:300px;
+  cursor:pointer;
+}
+.btn-skip{background:transparent;border:none;color:var(--primary-light);font-size:14px;margin-top:16px;cursor:pointer;font-weight:600}
+/* Heatmap Sensorial */
+.heatmap-sensor-content{padding:12px 16px 100px;display:flex;flex-direction:column;gap:14px}
+.heatmap-title h2{font-size:18px;font-weight:800;color:var(--text)}
+.heatmap-title p{font-size:11px;color:var(--text2);margin-top:4px;line-height:1.4}
+.heatmap-title p b{color:var(--primary-light)}
+.grid-sensor{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
+.cell-sensor{
+  height:52px;
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;color:#fff;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+  transition:transform 0.1s;
+  border:1px solid rgba(255,255,255,0.1);
+}
+.cell-sensor:active{transform:scale(0.95)}
+.cell-sensor.fria{background:linear-gradient(135deg,#1E40AF,#1D4ED8)}
+.cell-sensor.media-fria{background:linear-gradient(135deg,#0E7490,#0891B2)}
+.cell-sensor.media{background:linear-gradient(135deg,#16A34A,#22C55E)}
+.cell-sensor.quente{background:linear-gradient(135deg,#D97706,#F59E0B)}
+.cell-sensor.muito-quente{background:linear-gradient(135deg,#DC2626,#EF4444)}
+.cell-sensor.orange{background:linear-gradient(135deg,#EA580C,#F97316)}
+.legend-sensor{display:flex;justify-content:space-around;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px;margin-top:10px}
+.legend-sensor .item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2)}
+.legend-sensor .dot{width:12px;height:12px;border-radius:50%}
+.top5-sensor{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.top5-list{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px}
+.top5-list h3{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;margin-bottom:12px}
+.top5-sensor-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.top5-sensor-row .pos{width:20px;height:20px;background:var(--card2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.top5-sensor-row .num{width:32px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}
+.top5-sensor-row .num.red{background:var(--red)}
+.top5-sensor-row .num.orange{background:var(--orange)}
+.top5-sensor-row .num.yellow{background:var(--yellow);color:#000}
+.top5-sensor-row .score{font-size:11px;color:var(--text2);flex:1}
+.top5-sensor-row .score b{color:var(--primary-light)}
+.top5-sensor-row .pin{color:var(--primary-light);cursor:pointer}
+.ia-card{
+  background:linear-gradient(135deg,#1A1D29 0%,#1E1B4B 100%);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+}
+.ia-card h3{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.ia-card .sub{font-size:10px;color:var(--text2);margin-bottom:12px}
+.ia-card .brain-big{width:100%;height:140px;background:radial-gradient(ellipse at center,#7C3AED 0%,transparent 70%);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:70px;position:relative}
+.ia-card .desc{font-size:10px;color:var(--text2);line-height:1.5;margin-top:12px}
+.ia-card .desc b{color:var(--primary-light)}
+.btn-fixar{
+  background:rgba(124,58,237,0.15);
+  border:1px solid var(--primary);
+  color:var(--primary-light);
+  border-radius:10px;
+  padding:10px;
+  font-size:11px;
+  font-weight:600;
+  width:100%;
+  margin-top:12px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;
+}
+/* Config */
+.config-content{padding:0 0 100px}
+.config-item{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.config-item:first-child{border-radius:14px 14px 0 0;margin:12px 12px 0}
+.config-item:last-child{border-radius:0 0 14px 14px;margin:0 12px 12px;border:0}
+.config-item.middle{margin:0 12px;border-bottom:1px solid var(--border)}
+.config-item .ico{width:36px;height:36px;background:var(--card2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--primary-light)}
+.config-item .txt{flex:1}
+.config-item .txt .t{font-size:13px;font-weight:600;color:var(--text)}
+.config-item .txt .d{font-size:11px;color:var(--text2);margin-top:2px}
+.config-item .arrow{color:var(--text3);font-size:18px}
+.config-item .badge-purple{background:rgba(124,58,237,0.15);color:var(--primary-light);font-size:10px;padding:4px 8px;border-radius:8px;font-weight:600}
+.config-item.delete .ico{color:var(--red)}
+.config-item.delete .t{color:var(--red)}
+.footer-legal{padding:20px;text-align:center;font-size:10px;color:var(--text3);line-height:1.5}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status-bar">
+    <span>09:41</span>
+    <div class="right">
+      <span>📶</span><span>📶</span><span>🔋 100%</span>
+    </div>
+  </div>
+
+  <!-- DASHBOARD SCREEN -->
+  <div class="screen active" id="screen-dashboard">
+    <div class="topbar">
+      <div class="menu" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+      <div class="title">Lotofácil <b>Pro</b></div>
+      <div class="icon-btn" onclick="showScreen('config')">🔔</div>
+    </div>
+    <div class="dashboard-content">
+      <div class="card-topscore">
+        <div class="left">
+          <div class="trophy">🏆</div>
+          <div class="info">
+            <div class="label">TOP SCORE</div>
+            <div class="value" id="topScoreVal">R$ 1.234,56</div>
+            <div class="badge">Melhor resultado</div>
+          </div>
+        </div>
+        <div class="right">
+          <div class="label">GERAÇÃO ATUAL</div>
+          <div class="gen" id="genVal">42</div>
+          <div class="badge2">Em andamento</div>
+        </div>
+      </div>
+
+      <div class="card-conv">
+        <div class="header">
+          <h3>CONVERGÊNCIA (MÉDIA × TOP SCORE)</h3>
+          <div class="dropdown">Últimas 50 gerações ▼</div>
+        </div>
+        <div class="chart-wrap"><canvas class="chart" id="chartConv"></canvas></div>
+        <div class="legend">
+          <div class="item"><div class="dot" style="background:var(--success-light)"></div> Top Score</div>
+          <div class="item"><div class="dot" style="background:var(--blue)"></div> Média</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="top"><div class="ico" style="background:rgba(124,58,237,0.2);color:var(--primary-light)">🎯</div><span style="font-size:9px;color:var(--text2);font-weight:600">MÉDIA GERAL</span></div><div class="val">612,43</div><div class="sub purple">Últimas 50</div></div>
+        <div class="stat-card"><div class="top"><div class="ico" style="background:rgba(16,185,129,0.2);color:var(--success)">📈</div><span style="font-size:9px;color:var(--text2);font-weight:600">EVOLUÇÃO</span></div><div class="val" style="color:var(--success-light)">+18,62%</div><div class="sub">vs. 50 anteriores</div></div>
+        <div class="stat-card"><div class="top"><div class="ico" style="background:rgba(239,68,68,0.2);color:var(--red)">🔥</div><span style="font-size:9px;color:var(--text2);font-weight:600">MÁXIMO</span></div><div class="val">1.234,56</div><div class="sub purple">Geração 41</div></div>
+        <div class="stat-card"><div class="top"><div class="ico" style="background:rgba(14,165,233,0.2);color:var(--blue)">📊</div><span style="font-size:9px;color:var(--text2);font-weight:600">CONVERGÊNCIA</span></div><div class="val">2,02x</div><div class="sub blue">Top / Média</div></div>
+      </div>
+
+      <div class="card-ultimo">
+        <div class="header"><h3>ÚLTIMO CONCURSO</h3><div class="meta"><span>Concurso 3134</span><span>18/05/2025</span><span>📅</span></div></div>
+        <div class="bolas"><div class="bola">01</div><div class="bola">03</div><div class="bola">05</div><div class="bola">07</div><div class="bola">10</div><div class="bola">11</div><div class="bola">13</div><div class="bola">15</div><div class="bola">18</div><div class="bola">20</div><div class="bola">21</div><div class="bola">22</div><div class="bola">23</div><div class="bola">24</div><div class="bola">25</div></div>
+      </div>
+
+      <div class="card-anomalias">
+        <h3>ANOMALIAS DETECTADAS</h3>
+        <div class="anom-row"><div class="ico" style="background:rgba(239,68,68,0.15);color:var(--red)">⚠️</div><div class="txt"><div class="t">Intervalo longo sem: 02, 04, 06</div><div class="d">Há 28 concursos</div></div><div class="badge badge-alta">ALTA</div></div>
+        <div class="anom-row"><div class="ico" style="background:rgba(249,115,22,0.15);color:var(--orange)">🕒</div><div class="txt"><div class="t">Números em atraso: 02, 04, 06, 09, 14</div><div class="d">Acima de 20 concursos</div></div><div class="badge badge-media">MÉDIA</div></div>
+        <div class="anom-row"><div class="ico" style="background:rgba(14,165,233,0.15);color:var(--blue)">ℹ️</div><div class="txt"><div class="t">Sequência rara detectada: 11, 12, 13</div><div class="d">Rara nos últimos 100 concursos</div></div><div class="badge badge-baixa">BAIXA</div></div>
+      </div>
+
+      <div class="card-heatmap">
+        <h3><span>MAPA DE CALOR – FREQUÊNCIA (ÚLTIMOS 50 CONCURSOS)</span><span style="cursor:pointer">ⓘ</span></h3>
+        <div style="display:flex;gap:10px">
+          <div class="grid-5x5" style="flex:1" id="heatmapDash"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div class="bar-vert"></div><div style="font-size:8px;color:var(--text2);text-align:center">Menor frequência<br><br><br>Maior frequência</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GERADOR SCREEN -->
+  <div class="screen" id="screen-gerador">
+    <div class="topbar">
+      <div class="menu"><span></span><span></span><span></span></div>
+      <div class="title">Lotofácil <b>PRO</b><br><span style="font-size:12px;font-weight:400;color:var(--text2)">Generator</span></div>
+      <div class="icon-btn">📄</div>
+    </div>
+    <div class="gerador-content">
+      <div class="section-card">
+        <div class="sec-title">⚙️ CONFIGURAÇÕES DO GERADOR</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px">Qtd Jogos</div>
+        <div class="segmented" id="segJogos">
+          <div class="seg-btn" data-v="10"><div class="n">10</div><div class="l">Free</div></div>
+          <div class="seg-btn" data-v="15"><div class="n">15</div><div class="l"></div></div>
+          <div class="seg-btn" data-v="20"><div class="n">20</div><div class="l"></div></div>
+          <div class="seg-btn active" data-v="33"><div class="n">33</div><div class="l">Pro</div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="sec-title">🧬 ENGENHARIA GENÉTICA</div>
+        <div class="row-dna">
+          <div class="dna-col">
+            <div class="dna-label">Números Fixos ⓘ</div>
+            <div class="dna-chips"><div class="chip fixa">01</div><div class="chip fixa">05</div><div class="chip fixa">10</div></div>
+          </div>
+          <div class="dna-col">
+            <div class="dna-label">Números Bloqueados ⓘ</div>
+            <div class="dna-chips"><div class="chip bloq">25</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="sec-title" style="justify-content:space-between"><span>🔽 FILTROS INTELIGENTES</span><span style="background:rgba(124,58,237,0.15);color:var(--primary-light);font-size:10px;padding:4px 8px;border-radius:10px;border:1px solid var(--primary)">4 ativos</span></div>
+        <div class="filtros-wrap">
+          <div class="filtro-chip"><div class="check">✓</div> Impares</div>
+          <div class="filtro-chip"><div class="check">✓</div> Moldura</div>
+          <div class="filtro-chip"><div class="check">✓</div> Primos</div>
+          <div class="filtro-chip"><div class="check">✓</div> Foco 14</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="sec-title">🎛️ CONTROLE EVOLUTIVO</div>
+        <div class="slider-row"><div class="label">Mutação ⓘ</div><div class="val">5%</div></div>
+        <div class="slider"><div class="slider-fill" style="width:20%"><div class="slider-thumb" style="left:100%"></div></div></div>
+        <div style="height:14px"></div>
+        <div class="slider-row"><div class="label">Severidade ⓘ</div><div class="val">80%</div></div>
+        <div class="slider"><div class="slider-fill" style="width:80%"><div class="slider-thumb" style="left:100%"></div></div></div>
+      </div>
+
+      <div class="section-card">
+        <div class="sec-title">🧠 MEMÓRIA E DIVERSIDADE</div>
+        <div class="toggles">
+          <div class="toggle-item"><div class="label">Memória de Erro ⓘ</div><div class="toggle on"><div class="toggle-thumb"></div></div></div>
+          <div class="toggle-item"><div class="label">Distância de Hamming ⓘ</div><div class="toggle on"><div class="toggle-thumb"></div></div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="sec-title">🎯 ESTRATÉGIAS DE BUSCA</div>
+        <div class="estrategias">
+          <div class="est-row"><div class="ico">🛡️</div><div class="txt"><div class="t">Conservador</div><div class="d">Prioriza estabilidade e menor variação.</div></div><div class="arrow">›</div></div>
+          <div class="est-row"><div class="ico">⚡</div><div class="txt"><div class="t">Agressivo</div><div class="d">Explora mais combinações e padrões.</div></div><div class="arrow">›</div></div>
+          <div class="est-row"><div class="ico">🤖</div><div class="txt"><div class="t">Robo</div><div class="d">Equilíbrio entre exploração e precisão.</div></div><div class="arrow">›</div></div>
+          <div class="est-row"><div class="ico">🛋️</div><div class="txt"><div class="t">Preguiçoso</div><div class="d">Busca eficiente com menos iterações.</div></div><div class="arrow">›</div></div>
+        </div>
+      </div>
+
+      <div class="section-card" style="display:flex;justify-content:space-between;align-items:center">
+        <div style="display:flex;align-items:center;gap:8px"><span>📦</span><span style="font-size:12px;font-weight:600">MATERIAL DISPONÍVEL</span></div>
+        <div style="background:var(--primary);color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:8px">3</div>
+      </div>
+
+      <button class="btn-motor" onclick="iniciarMotor()">🚀 INICIAR MOTOR HÍBRIDO</button>
+    </div>
+  </div>
+
+  <!-- INTELIGENCIA SCREEN -->
+  <div class="screen" id="screen-inteligencia">
+    <div class="topbar" style="height:72px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--primary),#4C1D95);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">🧠</div>
+        <div><div style="font-size:18px;font-weight:800">Lotofácil <b style="color:var(--primary-light)">Pro</b></div><div style="font-size:12px;color:var(--blue-light)">Intelligence</div></div>
+      </div>
+      <div style="margin-left:auto"><div style="width:32px;height:32px;border:1px solid var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--primary-light)">AI</div></div>
+    </div>
+    <div class="intel-content">
+      <div class="intel-hero">
+        <div class="brain">🧠</div>
+        <div class="txt">
+          <h2>Lotofácil Pro Intelligence</h2>
+          <p>Nossa IA analisa padrões ocultos em milhões de resultados com múltiplos modelos e estatísticas avançadas para aumentar suas chances.</p>
+          <div class="intel-badges"><div class="intel-badge">🔗 Markov</div><div class="intel-badge">📚 Ensemble</div><div class="intel-badge">🔀 Apriori</div></div>
+        </div>
+      </div>
+
+      <div class="top5-card">
+        <div class="header"><h3>🎯 TOP 5 DEZENAS</h3><div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:10px;color:var(--text2)">Base: Últimos 500 concursos</div></div>
+        <div class="top5-row"><div class="pos">1º</div><div class="num">07</div><div class="bar"><div class="bar-fill" style="width:95%"></div></div><div class="pts">95.2 pts</div><div class="star">★</div></div>
+        <div class="top5-row"><div class="pos">2º</div><div class="num">14</div><div class="bar"><div class="bar-fill" style="width:92%"></div></div><div class="pts">95.2 pts</div><div class="star">★</div></div>
+        <div class="top5-row"><div class="pos">3º</div><div class="num">03</div><div class="bar"><div class="bar-fill" style="width:88%"></div></div><div class="pts">95.2 pts</div><div class="star">★</div></div>
+        <div class="top5-row"><div class="pos">4º</div><div class="num">21</div><div class="bar"><div class="bar-fill" style="width:85%"></div></div><div class="pts">95.2 pts</div><div class="star">★</div></div>
+        <div class="top5-row"><div class="pos">5º</div><div class="num">11</div><div class="bar"><div class="bar-fill" style="width:82%"></div></div><div class="pts">95.2 pts</div><div class="star">★</div></div>
+      </div>
+
+      <div class="top5-card">
+        <div class="header"><h3 style="color:var(--primary-light)">MAPA DE CALOR – FREQUÊNCIA DAS DEZENAS</h3><div style="width:20px;height:20px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px">?</div></div>
+        <div class="grid-5x5" id="heatmapIntel"></div>
+        <div style="display:flex;justify-content:space-around;margin-top:12px">
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)"><div style="width:12px;height:12px;background:#1E3A8A;border-radius:3px"></div>Fria</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)"><div style="width:12px;height:12px;background:#6D28D9;border-radius:3px"></div>Media</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)"><div style="width:12px;height:12px;background:#F43F5E;border-radius:3px"></div>Quente</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)"><div style="width:12px;height:12px;background:#EF4444;border-radius:3px"></div>Muito Quente</div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-tabs" style="height:60px">
+      <div class="tab active"><div class="ico">🧠</div>Atrasometro</div>
+      <div class="tab"><div class="ico">🔗</div>Markov</div>
+      <div class="tab"><div class="ico">📚</div>Ensemble</div>
+      <div class="tab"><div class="ico">🔀</div>Apriori</div>
+      <div class="tab"><div class="ico">🚀</div>Auto-Piloto</div>
+    </div>
+  </div>
+
+  <!-- RANKING SCREEN -->
+  <div class="screen" id="screen-ranking">
+    <div class="topbar" style="background:linear-gradient(135deg,#1A1A2E,#0F0F1A);border-bottom:none">
+      <div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center">👑</div><div><div style="font-size:18px;font-weight:800">Lotofácil <b style="color:var(--primary-light)">Pro</b></div><div style="font-size:12px;color:var(--primary-light)">Ranking</div></div></div>
+      <div style="margin-left:auto;width:36px;height:36px;background:var(--primary-dark);border-radius:50%;display:flex;align-items:center;justify-content:center">📊</div>
+    </div>
+    <div class="ranking-content" id="rankingList"></div>
+    <div class="bottom-tabs tab-premium">
+      <div class="tab active"><div class="ico">🏆</div>Top 50</div>
+      <div class="tab"><div class="ico">🥈</div>Top 3</div>
+      <div class="tab"><div class="ico">⭐</div>Favoritos</div>
+    </div>
+  </div>
+
+  <!-- DETALHES MODAL SCREEN -->
+  <div class="screen" id="screen-detalhes">
+    <div class="topbar"><div class="menu" onclick="showScreen('ranking')">←</div><div class="title">Detalhes do Jogo</div><div class="icon-btn">✕</div></div>
+    <div style="padding:16px 16px 100px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;gap:16px;align-items:center">
+        <div style="position:relative"><div class="pos-badge">1<div class="wreath left">🌿</div><div class="wreath right">🌿</div></div></div>
+        <div><div style="font-size:11px;color:var(--text2)">Pontuação Total</div><div style="font-size:28px;font-weight:800;color:var(--gold)">R$ 1.500,<span style="font-size:18px">00</span></div><div style="font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px">ID do Jogo: #202405251030 📋</div><div style="font-size:11px;color:var(--text2);margin-top:4px;display:flex;align-items:center;gap:6px">📅 25/05/2024 10:30</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px;font-weight:700">20 Dezenas de Ouro 💎</div><div style="background:rgba(124,58,237,0.15);border:1px solid var(--primary);color:var(--primary-light);font-size:10px;padding:4px 10px;border-radius:12px">Selecionadas</div></div>
+      <div class="dezenas-ouro" id="dezenasOuro"></div>
+      <div class="stats-grid">
+        <div class="stat-mini"><div class="ico">🎯</div><div class="label">Pontos</div><div class="val" style="color:var(--primary-light)">1.500</div><div class="sub">de 1.500</div></div>
+        <div class="stat-mini"><div class="ico" style="color:var(--success)">✅</div><div class="label">Acertos</div><div class="val">15</div><div class="sub">100%</div></div>
+        <div class="stat-mini"><div class="ico" style="color:var(--blue)">📊</div><div class="label">Apostas</div><div class="val">11</div><div class="sub">Geradas</div></div>
+        <div class="stat-mini"><div class="ico">🏆</div><div class="label">Rank</div><div class="val">1º</div><div class="sub">de 1.842</div></div>
+        <div class="stat-mini"><div class="ico" style="color:var(--blue)">%</div><div class="label">Aproveitamento</div><div class="val">100%</div><div class="sub">Perfeito</div></div>
+      </div>
+      <div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-size:14px;font-weight:700">Apostas Geradas</div><div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:4px 8px;font-size:11px">11 apostas</div></div>
+        <div class="apostas-list" id="apostasList"></div>
+        <div style="background:var(--card2);border:1px solid var(--border);border-radius:0 0 12px 12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text2);cursor:pointer"><span>Ver todas as apostas</span><span>⌄</span></div>
+      </div>
+      <div class="btns-row"><button class="btn-outline">📈 Stress Test</button><button class="btn-outline">🕒 Histórico</button><button class="btn-outline">🌀 Caos</button></div>
+      <button class="btn-whats">💬 Compartilhar via WhatsApp</button>
+      <div class="privacy">🔒 Os dados deste jogo são privados e não são compartilhados publicamente.</div>
+    </div>
+  </div>
+
+  <!-- PREMIUM SCREEN -->
+  <div class="screen" id="screen-premium">
+    <div class="topbar" style="background:transparent;border:none"><div class="menu" onclick="showScreen('dashboard')">←</div><div style="flex:1"></div></div>
+    <div class="premium-content">
+      <div class="premium-hero"><div class="crown">👑</div><h1>Premium</h1><h2>Lotofácil Pro <b>Premium</b></h2><p>Desbloqueie todo o poder da IA e aumente<br>suas chances na Lotofácil!</p></div>
+      <div class="compare-table">
+        <div class="compare-header"><div style="color:var(--gold)">Compare e veja a diferença</div><div class="free">Free</div><div class="pro">Pro</div></div>
+        <div class="compare-row"><div class="feat"><span class="ico">🎲</span>Quantidade de jogos</div><div class="val">10</div><div class="val pro">33</div></div>
+        <div class="compare-row"><div class="feat"><span class="ico">🧠</span>IA completa e avançada</div><div class="val">–</div><div class="val"><div class="check">✓</div></div></div>
+        <div class="compare-row"><div class="feat"><span class="ico">♾️</span>Uso ilimitado</div><div class="val">–</div><div class="val"><div class="check">✓</div></div></div>
+        <div class="compare-row"><div class="feat"><span class="ico">🚫</span>Sem anúncios</div><div class="val">–</div><div class="val"><div class="check">✓</div></div></div>
+        <div class="compare-row"><div class="feat"><span class="ico">📤</span>Exportar resultados</div><div class="val">–</div><div class="val"><div class="check">✓</div></div></div>
+      </div>
+      <div class="price-cards">
+        <div class="price-card"><div class="off">58% OFF</div><div class="name" style="color:var(--gold)">Anual</div><div class="sub">R$ 8,25/mês</div><div class="price"><span class="r">R$</span><span class="v">99</span><span class="c">,00</span></div><ul><li><div class="ck">✓</div>Acesso por 12 meses</li><li><div class="ck">✓</div>IA completa</li><li><div class="ck">✓</div>Todos os recursos</li><li><div class="ck">✓</div>Cancelamento fácil</li></ul></div>
+        <div class="price-card popular"><div class="name purple">Mensal</div><div class="sub">Pagamento mensal</div><div class="price"><span class="r">R$</span><span class="v">19</span><span class="c">,90</span></div><ul><li><div class="ck purple">✓</div>Acesso por 1 mês</li><li><div class="ck purple">✓</div>IA completa</li><li><div class="ck purple">✓</div>Todos os recursos</li><li><div class="ck purple">✓</div>Cancelamento fácil</li></ul></div>
+        <div class="price-card"><div class="name purple">Vitalício</div><div class="sub">Pagamento único</div><div class="price"><span class="r">R$</span><span class="v">199</span><span class="c">,00</span></div><ul><li><div class="ck purple">✓</div>Acesso para sempre</li><li><div class="ck purple">✓</div>IA completa</li><li><div class="ck purple">✓</div>Todos os recursos</li><li><div class="ck purple">✓</div>Melhor custo-benefício</li></ul></div>
+      </div>
+      <button class="btn-premium-cta">🛡️ Começar 3 dias grátis</button>
+      <div style="text-align:center;font-size:11px;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:6px">🔒 Após o período de teste, escolha seu plano.</div>
+      <div class="secure-row">
+        <div class="secure-item"><div class="ico">🛡️</div><div><div style="font-weight:600;color:var(--text)">Compra 100% segura</div><div>Seus dados protegidos</div></div></div>
+        <div class="secure-item"><div class="ico">🔄</div><div><div style="font-weight:600;color:var(--text)">Cancelamento fácil</div><div>Cancele quando quiser</div></div></div>
+        <div class="secure-item"><div class="ico">🎧</div><div><div style="font-weight:600;color:var(--text)">Suporte dedicado</div><div>Estamos aqui para ajudar</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONBOARDING SCREEN -->
+  <div class="screen" id="screen-onboarding">
+    <div class="onboard-content">
+      <div class="onboard-logo"><div class="clover">🍀</div><div class="txt">Lotofácil <b>Pro</b></div></div>
+      <div class="onboard-rocket">🚀</div>
+      <div class="onboard-title">Bem-vindo ao <b>Lab</b></div>
+      <div class="onboard-sub">Laboratório de IA para análise da Lotofácil</div>
+      <div class="onboard-dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+      <div class="onboard-page">1/3</div>
+      <button class="btn-onboard" onclick="nextOnboard()">Próximo</button>
+      <button class="btn-skip" onclick="showScreen('dashboard')">Pular</button>
+    </div>
+  </div>
+
+  <!-- HEATMAP SCREEN -->
+  <div class="screen" id="screen-heatmap">
+    <div class="topbar">
+      <div class="menu"><span></span><span></span><span></span></div>
+      <div class="title" style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center">🍀</div>Lotofácil <b style="color:var(--primary-light)">Pro</b></div>
+      <div class="icon-btn" style="border-radius:50%;background:var(--primary-dark)">👑</div>
+    </div>
+    <div class="heatmap-sensor-content">
+      <div class="heatmap-title"><h2>Heatmap Sensorial</h2><p>A intensidade das cores indica a frequência e o potencial das dezenas baseadas em <b>inteligência artificial</b>.</p></div>
+      <div class="grid-sensor" id="gridSensor"></div>
+      <div class="legend-sensor">
+        <div class="item"><div class="dot" style="background:#1E40AF"></div>Fria</div>
+        <div class="item"><div class="dot" style="background:#16A34A"></div>Média</div>
+        <div class="item"><div class="dot" style="background:#F59E0B"></div>Quente</div>
+        <div class="item"><div class="dot" style="background:#DC2626"></div>Muito Quente</div>
+      </div>
+      <div class="top5-sensor">
+        <div class="top5-list"><h3>🏆 Top 5 Dezenas</h3><div id="top5SensorList"></div><button class="btn-fixar">📌 Fixar todas no volante</button></div>
+        <div class="ia-card"><h3>Inteligência Artificial</h3><div class="sub">Análise Preditiva Avançada</div><div class="brain-big">🧠</div><div class="desc">Nosso algoritmo analisa milhares de padrões e tendências para identificar as dezenas com <b>maior potencial</b> de ocorrência no próximo concurso.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIG SCREEN -->
+  <div class="screen" id="screen-config">
+    <div class="topbar"><div class="menu" onclick="showScreen('dashboard')">←</div><div class="title">Configurações</div></div>
+    <div class="config-content">
+      <div class="config-item"><div class="ico">🎨</div><div class="txt"><div class="t">Tema Escuro</div><div class="d">Ativar ou personalizar o tema</div></div><div class="arrow">›</div></div>
+      <div class="config-item middle"><div class="ico">🌐</div><div class="txt"><div class="t">Idioma</div><div class="d">Selecione o idioma do aplicativo</div></div><div style="font-size:12px;color:var(--text2)">Português (BR)</div><div class="arrow">›</div></div>
+      <div class="config-item middle"><div class="ico">💳</div><div class="txt"><div class="t">Gestão de Banca</div><div class="d">Saldo atual para simulações</div></div><div style="font-size:12px;color:var(--text2)">R$ 1.000,00</div><div class="arrow">›</div></div>
+      <div class="config-item middle"><div class="ico">🔔</div><div class="txt"><div class="t">Notificações</div><div class="d">Receber alertas e lembretes</div></div><div class="toggle on" style="margin-left:auto"><div class="toggle-thumb"></div></div></div>
+      <div class="config-item middle"><div class="ico">👑</div><div class="txt"><div class="t">Premium</div><div class="d">Recursos e ferramentas exclusivas</div></div><div class="arrow">›</div></div>
+      <div class="config-item middle"><div class="ico">🔒</div><div class="txt"><div class="t">Privacidade</div><div class="d">Política de privacidade e dados</div></div><div class="arrow">›</div></div>
+      <div class="config-item middle"><div class="ico">📄</div><div class="txt"><div class="t">Termos</div><div class="d">Termos de uso do aplicativo</div></div><div class="arrow">›</div></div>
+      <div class="config-item middle"><div class="ico">ℹ️</div><div class="txt"><div class="t">Sobre</div><div class="d">Versão e informações do app</div><div class="badge-purple">Ferramenta educacional</div></div><div style="font-size:12px;color:var(--text2)">1.0.0</div><div class="arrow">›</div></div>
+      <div class="config-item middle"><div class="ico">⭐</div><div class="txt"><div class="t">Avaliar App</div><div class="d">Deixe sua avaliação na loja</div></div><div class="arrow">›</div></div>
+      <div class="config-item middle"><div class="ico">✉️</div><div class="txt"><div class="t">Contato</div><div class="d">Fale conosco</div></div><div class="arrow">›</div></div>
+      <div class="config-item delete"><div class="ico">🗑️</div><div class="txt"><div class="t">Deletar Dados</div><div class="d">Apagar todos os dados e configurações</div></div><div class="arrow" style="color:var(--red)">›</div></div>
+      <div class="footer-legal">Este aplicativo é uma ferramenta educacional e não possui vínculo com a Caixa Econômica Federal ou qualquer entidade governamental.<br>Jogue com responsabilidade. +18</div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-tabs" id="bottomNav">
+    <div class="tab active" data-screen="dashboard" onclick="showScreen('dashboard')"><div class="ico">🏠</div>Dashboard</div>
+    <div class="tab" data-screen="heatmap" onclick="showScreen('heatmap')"><div class="ico">📊</div>Análises</div>
+    <div class="tab" data-screen="gerador" onclick="showScreen('gerador')"><div class="ico">🔄</div>Gerações</div>
+    <div class="tab" data-screen="ranking" onclick="showScreen('ranking')"><div class="ico">📋</div>Jogos</div>
+    <div class="tab" data-screen="config" onclick="showScreen('config')"><div class="ico">⚙️</div>Configurações</div>
+  </div>
+</div>
+
+<script>
+// DATA
+const heatmapColors = ['#1E3A8A','#2563EB','#3730A3','#6D28D9','#FB923C','#EF4444'];
+function getHeatColor(v){
+  if(v<0.2) return '#1E3A8A';
+  if(v<0.4) return '#2563EB';
+  if(v<0.6) return '#3730A3';
+  if(v<0.8) return '#FB923C';
+  return '#EF4444';
+}
+function renderHeatmap(id, random=false){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.innerHTML='';
+  for(let i=1;i<=25;i++){
+    const v= random? Math.random() : (i%5)/5+Math.random()*0.3;
+    const c=document.createElement('div');
+    c.className='cell';
+    c.style.background=getHeatColor(v);
+    c.textContent=String(i).padStart(2,'0');
+    el.appendChild(c);
+  }
+}
+function renderSensor(){
+  const grid=document.getElementById('gridSensor');
+  const top5=document.getElementById('top5SensorList');
+  if(!grid) return;
+  grid.innerHTML='';
+  const scores=[];
+  for(let i=1;i<=25;i++){
+    const score=70+Math.random()*30;
+    scores.push({n:i,score});
+    const cell=document.createElement('div');
+    cell.className='cell-sensor';
+    const r=Math.random();
+    if(r<0.2) cell.classList.add('fria');
+    else if(r<0.4) cell.classList.add('media-fria');
+    else if(r<0.6) cell.classList.add('media');
+    else if(r<0.8) cell.classList.add('quente');
+    else cell.classList.add('muito-quente');
+    if(i===15||i===20||i===25) cell.classList.add('muito-quente');
+    if(i===3||i===7||i===11||i===14||i===17||i===21) cell.classList.add('muito-quente');
+    cell.textContent=String(i).padStart(2,'0');
+    grid.appendChild(cell);
+  }
+  scores.sort((a,b)=>b.score-a.score);
+  top5.innerHTML='';
+  scores.slice(0,5).forEach((s,idx)=>{
+    const row=document.createElement('div');
+    row.className='top5-sensor-row';
+    const cls = s.score>97?'red': s.score>93?'orange':'yellow';
+    row.innerHTML=`<div class="pos">${idx+1}</div><div class="num ${cls}">${String(s.n).padStart(2,'0')}</div><div class="score">Score: <b>${s.score.toFixed(1)}</b></div><div class="pin">📌</div>`;
+    top5.appendChild(row);
+  });
+}
+function renderRanking(){
+  const el=document.getElementById('rankingList');
+  el.innerHTML='';
+  for(let i=0;i<8;i++){
+    const score=(1234.56 - i*36.5).toFixed(2).replace('.',',');
+    const pos=i+1;
+    let posClass='normal', crown='';
+    if(pos===1){posClass='gold';crown='👑'}
+    else if(pos===2){posClass='silver';crown='👑'}
+    else if(pos===3){posClass='bronze';crown='👑'}
+    const base=Array.from({length:16},()=>String(Math.floor(Math.random()*25+1)).padStart(2,'0')).join(' ');
+    const card=document.createElement('div');
+    card.className='rank-card';
+    card.onclick=()=>showScreen('detalhes');
+    card.innerHTML=`
+      <div class="rank-pos ${posClass}">${crown?`<div class="crown">${crown}</div>`:''}${pos}</div>
+      <div class="rank-info"><div class="score-row"><div class="score">R$ ${score}</div><div class="g">G42</div></div><div class="base">Base: ${base}</div><div class="rank-chips"><div class="rank-chip c11">11</div><div class="rank-chip c12">12</div><div class="rank-chip c13">13</div><div class="rank-chip c14">14</div><div class="rank-chip c15">15</div></div></div>
+      <div class="rank-actions"><div class="rank-star">☆</div><div class="rank-arrow">›</div></div>`;
+    el.appendChild(card);
+  }
+}
+function renderDezenasOuro(){
+  const el=document.getElementById('dezenasOuro');
+  el.innerHTML='';
+  [1,2,3,4,6,7,8,9,10,11,12,13,15,16,17,18,20,21,23,24].forEach(n=>{
+    const d=document.createElement('div');
+    d.className='dez-ouro';
+    d.textContent=String(n).padStart(2,'0');
+    el.appendChild(d);
+  });
+}
+function renderApostas(){
+  const el=document.getElementById('apostasList');
+  el.innerHTML='';
+  const apostas=[
+    '01 03 04 07 08 09 11 12 13 15 16 17 20 23 24',
+    '01 02 03 06 07 08 10 11 12 15 16 18 20 21 23',
+    '01 02 03 04 06 07 08 09 10 13 15 17 18 21 24',
+    '01 02 04 06 08 09 10 11 13 16 17 18 20 23 24',
+    '02 03 04 06 07 09 10 12 13 15 16 18 20 21 23',
+  ];
+  apostas.forEach((nums,i)=>{
+    const row=document.createElement('div');
+    row.className='aposta-row';
+    row.innerHTML=`<div class="label">Aposta 0${i+1}:</div><div class="nums">${nums}</div><div style="cursor:pointer">📋</div>`;
+    el.appendChild(row);
+  });
+}
+function drawChart(){
+  const canvas=document.getElementById('chartConv');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const w=canvas.width=canvas.offsetWidth*2;
+  const h=canvas.height=canvas.offsetHeight*2;
+  ctx.scale(2,2);
+  const W=canvas.offsetWidth, H=canvas.offsetHeight;
+  ctx.clearRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle='rgba(255,255,255,0.06)';
+  ctx.lineWidth=1;
+  for(let y=0;y<=3;y++){
+    const yy=(H-20)*(y/3)+10;
+    ctx.beginPath();ctx.moveTo(40,yy);ctx.lineTo(W-10,yy);ctx.stroke();
+  }
+  // data
+  const top=[500,600,750,850,800,900,880,920,1100,1200,1300,1450,1400,1480,1470];
+  const media=[250,300,350,400,380,420,400,450,480,500,520,580,600,620,650];
+  function drawLine(data,color,fill=false){
+    ctx.beginPath();
+    ctx.strokeStyle=color;
+    ctx.lineWidth=2;
+    data.forEach((v,i)=>{
+      const x=40 + (W-50)*(i/(data.length-1));
+      const y=H-20 - (v/1600)*(H-40);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    if(fill){
+      ctx.lineTo(W-10,H-20);
+      ctx.lineTo(40,H-20);
+      ctx.closePath();
+      ctx.fillStyle=color.replace('1)','0.15)').replace('#22C55E','rgba(34,197,94,').replace('#0EA5E9','rgba(14,165,233,');
+      // fallback
+      ctx.fillStyle='rgba(34,197,94,0.1)';
+      if(color.includes('6,182')) ctx.fillStyle='rgba(6,182,212,0.1)';
+      ctx.fill();
+    }
+  }
+  drawLine(media,'rgba(6,182,212,1)');
+  drawLine(top,'rgba(34,197,94,1)',true);
+  // labels
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.font='10px Inter';
+  [1500,1000,500,0].forEach((v,i)=>{
+    const y=10 + (H-40)*(i/3);
+    ctx.fillText(String(v),2,y+3);
+  });
+  ['-50','-40','-30','-20','-10','0'].forEach((v,i)=>{
+    const x=40 + (W-50)*(i/5);
+    ctx.fillText(v,x-8,H-2);
+  });
+}
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const target=document.getElementById('screen-'+name);
+  if(target) target.classList.add('active');
+  document.querySelectorAll('.bottom-tabs .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll(`.tab[data-screen="${name}"]`).forEach(t=>t.classList.add('active'));
+  const bottomNav=document.getElementById('bottomNav');
+  if(['premium','detalhes','config','onboarding'].includes(name)){
+    bottomNav.style.display='none';
+  } else {
+    bottomNav.style.display='flex';
+    if(name==='ranking') bottomNav.className='bottom-tabs tab-premium';
+    else if(name==='inteligencia') bottomNav.style.display='none';
+    else bottomNav.className='bottom-tabs';
+  }
+  if(name==='dashboard') setTimeout(drawChart,100);
+  window.scrollTo(0,0);
+  document.querySelectorAll('.screen.active').forEach(s=>s.scrollTop=0);
+}
+let gen=42, topScore=1234.56, intervalMotor=null;
+function iniciarMotor(){
+  const btn=document.querySelector('.btn-motor');
+  if(intervalMotor){
+    clearInterval(intervalMotor);intervalMotor=null;
+    btn.innerHTML='🚀 INICIAR MOTOR HÍBRIDO';
+    btn.style.background='linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%)';
+    return;
+  }
+  btn.innerHTML='⏸️ PAUSAR MOTOR (G'+gen+')';
+  btn.style.background='linear-gradient(135deg,#EF4444,#7F1D1D)';
+  intervalMotor=setInterval(()=>{
+    gen++;
+    topScore+=Math.random()*15-2;
+    document.getElementById('genVal').textContent=gen;
+    document.getElementById('topScoreVal').textContent='R$ '+topScore.toFixed(2).replace('.',',');
+    renderHeatmap('heatmapDash',true);
+    renderHeatmap('heatmapIntel',true);
+    if(gen%5===0) drawChart();
+  },500);
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  renderHeatmap('heatmapDash');
+  renderHeatmap('heatmapIntel');
+  renderSensor();
+  renderRanking();
+  renderDezenasOuro();
+  renderApostas();
+  drawChart();
+  document.querySelectorAll('.seg-btn').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('.seg-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+    }
+  });
+  document.querySelectorAll('.toggle').forEach(t=>{
+    t.onclick=()=>t.classList.toggle('on');
+  });
+  document.querySelectorAll('.filtro-chip').forEach(c=>{
+    c.onclick=()=>c.classList.toggle('inactive');
+  });
+  // start with dashboard, but show onboarding first time
+  if(!localStorage.getItem('onboardDone')){
+    showScreen('onboarding');
+  }
+});
+function nextOnboard(){
+  const dots=document.querySelectorAll('.dot');
+  const page=document.querySelector('.onboard-page');
+  const title=document.querySelector('.onboard-title');
+  const sub=document.querySelector('.onboard-sub');
+  const rocket=document.querySelector('.onboard-rocket');
+  let current=Array.from(dots).findIndex(d=>d.classList.contains('active'));
+  if(current<2){
+    dots[current].classList.remove('active');
+    dots[current+1].classList.add('active');
+    page.textContent=(current+2)+'/3';
+    if(current===0){
+      title.innerHTML='Análise com <b>IA Avançada</b>';
+      sub.textContent='Atrasômetro, Markov, Ensemble e Apriori para encontrar padrões ocultos';
+      rocket.textContent='🧠';
+    } else {
+      title.innerHTML='Gere Jogos <b>Inteligentes</b>';
+      sub.textContent='Motor genético híbrido com 33 jogos, filtros e gestão de banca';
+      rocket.textContent='🎯';
+      document.querySelector('.btn-onboard').textContent='Começar';
+      document.querySelector('.btn-onboard').onclick=()=>{
+        localStorage.setItem('onboardDone','1');
+        showScreen('dashboard');
+      };
+    }
+  }
+}
+function toggleMenu(){
+  // simple: go to config
+  showScreen('config');
+}
+</script>
+</body>
+</html>
