@@ -3,108 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotofácil Pro - IA & Estatística</title>
-    <meta name="description" content="Laboratório de IA para análise estatística da Lotofácil. Ferramenta educacional com Algoritmo Genético e Machine Learning.">
+    <title>Lotofácil Pro - IA & Estatística | Laboratório de Inteligência Artificial</title>
+    <meta name="description" content="Lotofácil Pro: Laboratório de IA com Algoritmo Genético, 6 IAs, 3675 sorteios, desdobramento inteligente. Ferramenta educacional, não garante prêmios. +18">
+    <meta name="keywords" content="lotofácil, lotofacil, desdobramento, fechamento, análise, estatística, inteligência artificial, simulador, app android">
+    <meta property="og:title" content="Lotofácil Pro - IA & Estatística">
+    <meta property="og:description" content="Onde a matemática encontra a sorte. Algoritmo Genético + 6 IAs + 3675 sorteios.">
+    <meta property="og:image" content="assets/feature_graphic.webp">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/webp" href="assets/icon_512.webp">
     <style>
-        :root { --primary: #6F42C1; --secondary: #17A2B8; --tertiary: #FFD700; --dark: #121212; --surface: #1E1E1E; }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: var(--dark); color: #E0E0E0; line-height: 1.6; }
-        .hero { background: linear-gradient(135deg, #6F42C1 0%, #4A1A8B 100%); padding: 80px 20px; text-align: center; }
-        .hero h1 { font-size: 3em; margin: 0; font-family: 'Outfit', sans-serif; }
-        .hero p { font-size: 1.2em; opacity: 0.9; }
-        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-        .card { background: var(--surface); border-radius: 16px; padding: 24px; margin: 16px 0; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
-        .btn { display: inline-block; background: var(--primary); color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: bold; margin: 8px; }
-        .btn-secondary { background: var(--secondary); }
+        :root { 
+            --primary: #6F42C1; --primary-light: #9A6BFF; --primary-dark: #4A1A8B;
+            --secondary: #17A2B8; --tertiary: #FFD700; --success: #28A745;
+            --dark: #121212; --surface: #1E1E1E; --surface-variant: #2D2D2D;
+            --text: #E0E0E0; --text-secondary: #A0A0A0;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: var(--dark); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+        .hero { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); 
+            padding: 80px 20px 60px; text-align: center; position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
+        .hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+        .hero-icon { width: 120px; height: 120px; border-radius: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: 0 auto 24px; display: block; }
+        .hero h1 { font-size: 3.5em; margin: 0; font-family: 'Outfit', sans-serif; font-weight: 800; letter-spacing: -1px; }
+        .hero .slogan { font-size: 1.3em; opacity: 0.9; margin: 12px 0 8px; font-family: 'Sora', sans-serif; }
+        .hero .subtitle { font-size: 1em; opacity: 0.7; max-width: 600px; margin: 0 auto 24px; }
+        .badges { margin: 16px 0 32px; }
+        .badge { display: inline-block; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8em; font-weight: 600; margin: 4px; border: 1px solid rgba(255,255,255,0.2); }
+        .badge-gold { background: var(--tertiary); color: #121212; }
+        .btn { display: inline-block; background: white; color: var(--primary-dark); padding: 14px 28px; border-radius: 14px; text-decoration: none; font-weight: 700; margin: 8px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--secondary); color: white; }
         .btn-tertiary { background: var(--tertiary); color: #121212; }
-        h2 { color: var(--primary); font-family: 'Sora', sans-serif; }
-        .badge { display: inline-block; background: var(--tertiary); color: #121212; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: bold; }
-        .disclaimer { background: #2D2D2D; border-left: 4px solid var(--tertiary); padding: 16px; border-radius: 8px; font-size: 0.9em; }
-        footer { text-align: center; padding: 40px; opacity: 0.6; font-size: 0.9em; }
+        .btn-outline { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.3); }
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+        .card { background: var(--surface); border-radius: 20px; padding: 28px; margin: 20px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .card-gold { border: 2px solid var(--tertiary); background: linear-gradient(135deg, rgba(255,215,0,0.08) 0%, var(--surface) 100%); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+        h2 { color: var(--primary-light); font-family: 'Sora', sans-serif; font-size: 2em; margin: 0 0 16px; }
+        h3 { color: var(--text); font-family: 'Sora', sans-serif; margin: 0 0 8px; }
+        .feature-icon { font-size: 2.5em; margin-bottom: 12px; display: block; }
+        .video-container { position: relative; padding-bottom: 177.78%; /* 9:16 */ height: 0; overflow: hidden; border-radius: 20px; background: var(--surface-variant); max-width: 360px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .screenshots { display: flex; gap: 16px; overflow-x: auto; padding: 20px 0; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+        .screenshots::-webkit-scrollbar { height: 8px; }
+        .screenshots::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        .screenshot { flex: 0 0 280px; scroll-snap-align: start; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.3); transition: transform 0.3s; }
+        .screenshot:hover { transform: translateY(-4px) scale(1.02); }
+        .screenshot img { width: 100%; height: auto; display: block; }
+        .screenshot-label { background: var(--surface-variant); padding: 12px; text-align: center; font-size: 0.9em; font-weight: 600; }
+        .disclaimer { background: var(--surface-variant); border-left: 4px solid var(--tertiary); padding: 16px 20px; border-radius: 12px; font-size: 0.9em; margin: 24px 0; }
+        .stats { display: flex; justify-content: space-around; text-align: center; margin: 32px 0; flex-wrap: wrap; gap: 20px; }
+        .stat { flex: 1; min-width: 120px; }
+        .stat-number { font-size: 2.5em; font-weight: 800; color: var(--primary-light); font-family: 'Outfit', sans-serif; display: block; }
+        .stat-label { font-size: 0.9em; color: var(--text-secondary); }
+        .price-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 24px 0; }
+        .price-card { background: var(--surface); border-radius: 16px; padding: 24px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .price-card.popular { border: 2px solid var(--tertiary); transform: scale(1.05); box-shadow: 0 12px 32px rgba(255,215,0,0.15); }
+        .price-card.popular::before { content: 'MAIS POPULAR'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--tertiary); color: #121212; padding: 4px 16px; border-radius: 20px; font-size: 0.7em; font-weight: 800; }
+        .price { font-size: 2em; font-weight: 800; color: var(--text); }
+        .price-period { font-size: 0.9em; color: var(--text-secondary); }
+        footer { text-align: center; padding: 60px 20px 40px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px; }
+        .tech-stack { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .tech-badge { background: var(--surface-variant); padding: 6px 12px; border-radius: 20px; font-size: 0.8em; border: 1px solid rgba(255,255,255,0.05); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5em; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .price-card.popular { transform: none; }
+        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700&family=Sora:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Sora:wght@600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="hero">
-        <div style="font-size: 80px;">🚀</div>
-        <h1>Lotofácil Pro</h1>
-        <p>Laboratório de Inteligência Artificial para Análise da Lotofácil</p>
-        <p><span class="badge">Ferramenta Educacional</span> <span class="badge">+18</span> <span class="badge">Não afiliado à Caixa</span></p>
-        <div style="margin-top: 24px;">
-            <a href="https://play.google.com/store/apps/details?id=com.berger33.lotofacilpro" class="btn">📱 Baixar na Play Store (Em Breve)</a>
-            <a href="https://github.com/berger33/SimuladorLotofacil" class="btn btn-secondary">💻 GitHub</a>
-            <a href="#privacy" class="btn btn-tertiary">🔒 Privacidade</a>
+        <div class="hero-content">
+            <img src="assets/icon_512.webp" alt="Lotofácil Pro Icon" class="hero-icon" width="120" height="120">
+            <h1>Lotofácil Pro</h1>
+            <p class="slogan">Onde a matemática encontra a sorte</p>
+            <p class="subtitle">Laboratório de Inteligência Artificial com Algoritmo Genético, 6 IAs, 3675 sorteios reais e desdobramento inteligente 20→15</p>
+            <div class="badges">
+                <span class="badge">🧬 Algoritmo Genético</span>
+                <span class="badge">🤖 6 IAs</span>
+                <span class="badge">📊 3675 Sorteios</span>
+                <span class="badge badge-gold">👑 Premium</span>
+                <span class="badge">+18</span>
+                <span class="badge">Educacional</span>
+            </div>
+            <div>
+                <a href="#video" class="btn">▶️ Ver Vídeo 30s</a>
+                <a href="https://github.com/berger33/SimuladorLotofacil/tree/Aplicativo" class="btn btn-outline">💻 Ver Código</a>
+                <a href="#download" class="btn btn-tertiary">📱 Play Store (Em Breve)</a>
+            </div>
+            <div class="stats">
+                <div class="stat"><span class="stat-number">99</span><span class="stat-label">Arquivos Código</span></div>
+                <div class="stat"><span class="stat-number">85%</span><span class="stat-label">Pronto p/ Play Store</span></div>
+                <div class="stat"><span class="stat-number">94%</span><span class="stat-label">Economia WebP</span></div>
+                <div class="stat"><span class="stat-number">9</span><span class="stat-label">Screenshots IA</span></div>
+            </div>
         </div>
     </div>
 
     <div class="container">
-        <div class="card">
-            <h2>🎯 O que é?</h2>
-            <p>O Lotofácil Pro não é um gerador aleatório. É um <strong>laboratório de pesquisa</strong> que usa:</p>
-            <div class="grid">
+        <div class="grid grid-2">
+            <div>
                 <div class="card">
-                    <h3>🧬 Algoritmo Genético</h3>
-                    <p>Populações evoluem, elite cruza e muta. Lucro médio sobe a cada geração.</p>
+                    <h2>🎬 Vídeo Preview 30s</h2>
+                    <p>Veja o app em ação: dashboard, gerador, IA, ranking e premium. Gravado com motor real e 3675 sorteios.</p>
+                    <div class="video-container" id="video">
+                        <video controls poster="assets/01_dashboard.webp" preload="metadata">
+                            <source src="assets/video_preview_30s.mp4" type="video/mp4">
+                            Seu navegador não suporta vídeo.
+                        </video>
+                    </div>
+                    <p style="text-align: center; margin-top: 12px; font-size: 0.9em; color: var(--text-secondary);">
+                        📱 1080x1920 • 2.4MB • 30s • 9 screenshots com Ken Burns zoom
+                    </p>
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="assets/video_preview_30s.mp4" class="btn btn-secondary" download>⬇️ Baixar Vídeo MP4</a>
+                        <a href="https://www.youtube.com/" class="btn btn-outline" target="_blank">📺 YouTube (Em Breve)</a>
+                    </div>
                 </div>
+            </div>
+            <div>
                 <div class="card">
-                    <h3>🤖 6 IAs</h3>
-                    <p>Atrasômetro, Markov, Ensemble Jedi (XGBoost), Apriori, Auto-Piloto, RL DQN.</p>
+                    <h2>🎯 O que é?</h2>
+                    <p>O Lotofácil Pro <strong>não é um gerador aleatório</strong>. É um laboratório de pesquisa que evolui matrizes como seres vivos:</p>
+                    <div class="grid">
+                        <div class="card" style="margin: 0;">
+                            <span class="feature-icon">🧬</span>
+                            <h3>Algoritmo Genético</h3>
+                            <p style="font-size: 0.9em;">Populações de 20-30 matrizes mãe, elite cruza e muta, lucro médio sobe a cada geração. Darwin aplicado à loteria.</p>
+                        </div>
+                        <div class="card" style="margin: 0;">
+                            <span class="feature-icon">🤖</span>
+                            <h3>6 Inteligências</h3>
+                            <p style="font-size: 0.9em;">Atrasômetro (2σ), Markov (sinergia), Ensemble Jedi (XGBoost), Apriori (trincas), Auto-Piloto, RL DQN.</p>
+                        </div>
+                    </div>
+                    <div class="card" style="margin: 16px 0 0; background: var(--surface-variant);">
+                        <h3>🎯 Fechamento Inteligente</h3>
+                        <p style="font-size: 0.9em; margin: 0;">Transforma 20 dezenas em 15 jogos com filtros: ímpares, moldura, primos, soma, Fibonacci, sequências. Sistema com relaxamento automático (+1/-1) para nunca travar.</p>
+                    </div>
                 </div>
+
                 <div class="card">
-                    <h3>🎯 Fechamento Inteligente</h3>
-                    <p>20 → 15 com filtros relaxáveis, nunca trava.</p>
+                    <h2>📱 App Android</h2>
+                    <p><strong>Branch Aplicativo:</strong> 102 arquivos, core 100% desacoplado, Flutter Pro produção, Kivy MVP, API FastAPI</p>
+                    <div class="tech-stack">
+                        <span class="tech-badge">Flutter Material 3</span>
+                        <span class="tech-badge">Hive</span>
+                        <span class="tech-badge">Dio</span>
+                        <span class="tech-badge">fl_chart</span>
+                        <span class="tech-badge">AdMob</span>
+                        <span class="tech-badge">IAP Billing</span>
+                        <span class="tech-badge">Firebase</span>
+                        <span class="tech-badge">FastAPI</span>
+                        <span class="tech-badge">Core Shared</span>
+                    </div>
+                    <p style="font-size: 0.9em;">Core real com 3675 sorteios Caixa, MotorLite Sharpe, 9/9 testes passando, 94% economia WebP (16MB→1MB), AAB ~20MB</p>
+                    <a href="https://github.com/berger33/SimuladorLotofacil/tree/Aplicativo" class="btn btn-primary">Ver Branch Aplicativo</a>
+                    <a href="https://github.com/berger33/SimuladorLotofacil/pull/1" class="btn btn-secondary">PR #1</a>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <h2>✨ Funcionalidades</h2>
-            <ul>
-                <li>📊 Dashboard com gráfico convergência (ECG) Top vs Média</li>
-                <li>🧬 Gerador com Qtd Jogos 10-33, fixas/bloqueadas, 6 filtros, sliders mutação/severidade</li>
-                <li>🧠 Inteligência: 5 abas com heatmap 5x5 sensorial</li>
-                <li>🏆 Ranking Top 50 com detalhes, stress tests (histórico, caos 100k, bootstrap), export CSV/PDF, share WhatsApp</li>
-                <li>👑 Premium: 33 jogos, IA completa, ilimitado, sem ads</li>
-            </ul>
+            <h2>📸 Screenshots (9) - Gerados com IA + WebP 94% Economia</h2>
+            <p>Interface Material 3 dark, roxo #6F42C1 + ciano #17A2B8 + ouro #FFD700, tipografia Outfit/Sora/Inter</p>
+            <div class="screenshots">
+                <div class="screenshot"><img src="assets/01_dashboard.webp" alt="Dashboard" loading="lazy"><div class="screenshot-label">01 Dashboard - Gráfico ECG</div></div>
+                <div class="screenshot"><img src="assets/02_gerador.webp" alt="Gerador" loading="lazy"><div class="screenshot-label">02 Gerador - DNA + Filtros</div></div>
+                <div class="screenshot"><img src="assets/03_inteligencia.webp" alt="Inteligência" loading="lazy"><div class="screenshot-label">03 Inteligência - 5 IAs</div></div>
+                <div class="screenshot"><img src="assets/04_ranking.webp" alt="Ranking" loading="lazy"><div class="screenshot-label">04 Ranking Top 50</div></div>
+                <div class="screenshot"><img src="assets/05_detalhes.webp" alt="Detalhes" loading="lazy"><div class="screenshot-label">05 Detalhes Matriz</div></div>
+                <div class="screenshot"><img src="assets/06_premium.webp" alt="Premium" loading="lazy"><div class="screenshot-label">06 Premium Paywall</div></div>
+                <div class="screenshot"><img src="assets/07_onboarding.webp" alt="Onboarding" loading="lazy"><div class="screenshot-label">07 Onboarding</div></div>
+                <div class="screenshot"><img src="assets/08_heatmap.webp" alt="Heatmap" loading="lazy"><div class="screenshot-label">08 Heatmap 5x5</div></div>
+                <div class="screenshot"><img src="assets/09_config.webp" alt="Config" loading="lazy"><div class="screenshot-label">09 Configurações</div></div>
+            </div>
+            <p style="font-size: 0.9em; color: var(--text-secondary);">💡 Dica: Arraste para ver mais. Screenshots IA para MVP, produção final usar screenshots reais com `adb screencap` ou Fastlane Screengrab + device frame Pixel 7.</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>✨ Funcionalidades</h2>
+                <ul style="padding-left: 20px;">
+                    <li>📊 Dashboard com gráfico convergência (ECG) Top vs Média, último sorteio bolas roxas, anomalias, heatmap, atalhos, banner AdMob</li>
+                    <li>🧬 Gerador com Qtd Jogos 10-33, fixas/bloqueadas chips, 6 filtros, sliders mutação/severidade, estratégias prontas, bottom sheet progresso ao vivo BLoC</li>
+                    <li>🧠 Inteligência: 5 abas (atrasômetro, markov, ensemble Pro, apriori, autopiloto) com info cards e listas</li>
+                    <li>🏆 Ranking Top 50 com CardMatriz, detalhes bottom sheet base 20 ouro + jogos + stats + stress tests + share WhatsApp + favoritar</li>
+                    <li>👑 Premium: paywall comparativo Free vs Pro, 3 preços anual popular 58% OFF trial 3 dias</li>
+                    <li>⚙️ Config: tema, idioma, banca, notificações, privacy, deletar dados Hive</li>
+                </ul>
+            </div>
+            <div class="card card-gold">
+                <h2>💰 Monetização Freemium</h2>
+                <div class="price-cards">
+                    <div class="price-card">
+                        <h3>Free</h3>
+                        <div class="price">R$ 0</div>
+                        <p style="font-size: 0.9em;">10 jogos, 50 gerações, atrasômetro+markov, com ads</p>
+                    </div>
+                    <div class="price-card popular">
+                        <h3>Pro Anual</h3>
+                        <div class="price">R$ 99,90<span class="price-period">/ano</span></div>
+                        <p style="font-size: 0.9em;">R$ 8,32/mês • 58% OFF • 3 dias grátis</p>
+                        <p style="font-size: 0.8em; margin-top: 8px;">✅ 33 jogos, IA completa, ilimitado, sem ads, export, turbo, suporte VIP</p>
+                    </div>
+                </div>
+                <p style="font-size: 0.9em;"><strong>AdMob:</strong> Banner dashboard, interstitial a cada 3 gerações, rewarded +20 gerações<br>
+                <strong>IAP:</strong> Mensal R$19,90, Anual R$99, Vitalício R$199<br>
+                <strong>Estimativa Mês 1:</strong> 10k instalações, 5% conversão = R$9.900 + ads R$360 = ~R$10k</p>
+                <div class="tech-stack">
+                    <span class="tech-badge">AdMob Banner</span>
+                    <span class="tech-badge">Interstitial</span>
+                    <span class="tech-badge">Rewarded</span>
+                    <span class="tech-badge">Play Billing 6</span>
+                    <span class="tech-badge">Validação Servidor</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="download">
+            <h2>📱 Download & Build</h2>
+            <div class="grid">
+                <div>
+                    <h3>🔨 Build AAB 1-Clique</h3>
+                    <pre style="background: var(--dark); padding: 16px; border-radius: 12px; overflow-x: auto; font-size: 0.85em;"><code>cd android_app
+./scripts/publish_1click.sh
+# Gera AAB ~20MB em flutter_pro/build/app/outputs/bundle/release/app-release.aab</code></pre>
+                    <p style="font-size: 0.9em;">Ou com Docker (100% reproduzível):<br>
+                    <code>docker build -t lotofacil-build . && docker run --rm -v $(pwd)/build:/app/build lotofacil-build</code></p>
+                </div>
+                <div>
+                    <h3>📤 Play Store (16 dias)</h3>
+                    <ol style="font-size: 0.9em; padding-left: 20px;">
+                        <li>GitHub Pages: Settings > Pages > Branch Aplicativo / docs → <code>https://berger33.github.io/SimuladorLotofacil/privacy.html</code></li>
+                        <li>Play Console: Criar app Tools 12+, privacy URL, data safety, 20 testers, IAP produtos, upload AAB teste interno</li>
+                        <li>Teste interno 14 dias obrigatório Google (20 testers 5 min/dia)</li>
+                        <li>Enquanto teste roda: deploy API Cloud Run + Firebase + AdMob/IAP UI</li>
+                        <li>Beta fechado/aberto + produção rollout 20%→50%→100% com Fastlane</li>
+                    </ol>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 24px;">
+                <a href="https://play.google.com/store/apps/details?id=com.berger33.lotofacilpro" class="btn btn-primary">📱 Play Store (Em Breve)</a>
+                <a href="https://github.com/berger33/SimuladorLotofacil/releases" class="btn btn-secondary">⬇️ APK Debug</a>
+                <a href="assets/video_preview_30s.mp4" class="btn btn-tertiary" download>🎬 Vídeo 30s (2.4MB)</a>
+            </div>
         </div>
 
         <div class="card">
-            <h2>📱 App Android</h2>
-            <p>Transformação do simulador desktop CustomTkinter para app Android comercial:</p>
-            <ul>
-                <li><strong>Branch Aplicativo:</strong> 84 arquivos, core 100% desacoplado, Flutter Pro produção, Kivy MVP, API FastAPI</li>
-                <li><strong>Stack:</strong> Flutter Material 3 + Hive + Dio + fl_chart + AdMob + IAP + Firebase</li>
-                <li><strong>Core:</strong> 3675 sorteios Caixa, MotorLite com Sharpe, testes 9/9 passando</li>
-                <li><strong>Assets:</strong> Ícone 512, feature 1024x500, 8 screenshots 1080x1920 gerados com IA</li>
-            </ul>
-            <a href="https://github.com/berger33/SimuladorLotofacil/tree/Aplicativo" class="btn">Ver Branch Aplicativo</a>
-        </div>
-
-        <div class="card" id="privacy">
-            <h2>🔒 Privacidade</h2>
-            <p><a href="privacy.html" class="btn btn-secondary">Ver Política Completa</a> <a href="terms.html" class="btn">Termos</a></p>
-            <p><strong>Resumo:</strong> Coletamos ID dispositivo para ads, analytics anonimizado, crash logs. Não coletamos nome, email, localização. Compartilhamos com Google Firebase/AdMob. Você pode deletar dados no app.</p>
+            <h2>📚 Documentação Completa</h2>
+            <div class="grid">
+                <div>
+                    <h3>📖 Planejamento</h3>
+                    <ul style="font-size: 0.9em;">
+                        <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/ANALISE_COMPLETA.md" style="color: var(--secondary);">Análise Completa Sistema Atual</a></li>
+                        <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/PLANO_APP_ANDROID.md" style="color: var(--secondary);">Plano 8 Semanas Android</a></li>
+                        <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/ARQUITETURA_TECNICA.md" style="color: var(--secondary);">Arquitetura Técnica</a></li>
+                        <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/UI_UX_DESIGN_SYSTEM.md" style="color: var(--secondary);">Design System Material 3</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>🚀 Lançamento</h3>
+                    <ul style="font-size: 0.9em;">
+                        <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/MONETIZACAO_PLAYSTORE.md" style="color: var(--secondary);">Monetização Play Store</a></li>
+                        <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/android_app/RELEASE_CHECKLIST_1CLICK.md" style="color: var(--secondary);">Release Checklist 1-Clique</a></li>
+                        <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/android_app/PROXIMOS_PASSOS_PLAYSTORE.md" style="color: var(--secondary);">Próximos Passos 16 dias</a></li>
+                        <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/android_app/FIREBASE_ADMOB_SETUP.md" style="color: var(--secondary);">Firebase + AdMob Setup 15min</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div class="disclaimer">
             <strong>⚠️ AVISO LEGAL IMPORTANTE:</strong> Este aplicativo é uma ferramenta de análise estatística e simulação educacional. Não é afiliado à Caixa Econômica Federal. Loteria é jogo de azar com resultados independentes. Este app não garante prêmios ou lucros. Jogue com responsabilidade. +18. Se você tem problemas com jogo, procure ajuda: <a href="https://www.jogoresponsavel.org.br" style="color: var(--tertiary);">www.jogoresponsavel.org.br</a>
         </div>
 
-        <div class="card">
-            <h2>📚 Documentação</h2>
-            <ul>
-                <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/ANALISE_COMPLETA.md" style="color: var(--secondary);">Análise Completa do Sistema Atual</a></li>
-                <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/PLANO_APP_ANDROID.md" style="color: var(--secondary);">Plano 8 Semanas Android</a></li>
-                <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/ARQUITETURA_TECNICA.md" style="color: var(--secondary);">Arquitetura Técnica</a></li>
-                <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/docs/MONETIZACAO_PLAYSTORE.md" style="color: var(--secondary);">Monetização Play Store</a></li>
-                <li><a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/android_app/PROXIMOS_PASSOS_PLAYSTORE.md" style="color: var(--secondary);">Próximos Passos Play Store</a></li>
-            </ul>
+        <div class="card" id="privacy" style="text-align: center;">
+            <h2>🔒 Privacidade & Termos</h2>
+            <p>Transparência total sobre dados e uso</p>
+            <a href="privacy.html" class="btn btn-secondary">🔒 Privacy Policy</a>
+            <a href="terms.html" class="btn">📄 Terms of Service</a>
+            <a href="https://github.com/berger33/SimuladorLotofacil/blob/Aplicativo/android_app/playstore/assets/ASSETS_README.md" class="btn btn-outline">🎨 Assets</a>
         </div>
     </div>
 
     <footer>
-        <p>Desenvolvido com ☕ e IA Avançada • Lotofácil Pro 1.0.0 (Aplicativo) • Branch Aplicativo</p>
-        <p>Não afiliado à Caixa • Ferramenta educacional • +18 • <a href="https://github.com/berger33/SimuladorLotofacil" style="color: var(--secondary);">GitHub</a> • <a href="privacy.html" style="color: var(--secondary);">Privacidade</a> • <a href="terms.html" style="color: var(--secondary);">Termos</a></p>
+        <img src="assets/icon_512.webp" alt="Icon" width="48" height="48" style="border-radius: 12px; margin-bottom: 16px;">
+        <p><strong>Lotofácil Pro 1.0.0 (Aplicativo)</strong> • Branch Aplicativo • 102 arquivos • 85% Play Store</p>
+        <p>Desenvolvido com ☕ e IA Avançada • Algoritmo Genético + XGBoost + Markov • 3675 sorteios • Material 3</p>
+        <p>Não afiliado à Caixa • Ferramenta educacional • +18 • 
+            <a href="https://github.com/berger33/SimuladorLotofacil" style="color: var(--secondary);">GitHub</a> • 
+            <a href="privacy.html" style="color: var(--secondary);">Privacidade</a> • 
+            <a href="terms.html" style="color: var(--secondary);">Termos</a> • 
+            <a href="https://github.com/berger33/SimuladorLotofacil/pull/1" style="color: var(--secondary);">PR #1</a>
+        </p>
+        <p style="margin-top: 16px; font-size: 0.8em; opacity: 0.5;">
+            Ícone WebP 40KB (98% economia) • Feature 135KB • Screenshots 1MB total WebP (94% economia) • Vídeo 2.4MB 30s • AAB ~20MB<br>
+            Build: ./scripts/publish_1click.sh • Docker: docker build -t lotofacil-build .<br>
+            Tempo até produção: 16 dias (2 dias build + 14 dias teste obrigatório Google)
+        </p>
     </footer>
 </body>
 </html>
