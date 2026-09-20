@@ -1037,6 +1037,20 @@ function validarJogo(jogo, fixas, bloqueadas) {
       const { page, errors, ctx } = await bootDashboard(browser, { viewport: { width: 360, height: 640 } });
       const ov = await page.evaluate(() => ({ docW: document.documentElement.scrollWidth, winW: window.innerWidth }));
       L.ok(ov.docW <= ov.winW + 1, `sem estouro horizontal em 360px (${ov.docW}/${ov.winW})`);
+      // nenhum conteúdo pode ultrapassar o padding do próprio contêiner (ex.: card de TOP SCORE em 360px)
+      const transbordo = await page.evaluate(() => {
+        const ruins = [];
+        document.querySelectorAll('.screen.active *').forEach(el => {
+          const pai = el.parentElement; if (!pai) return;
+          const cs = getComputedStyle(pai);
+          if (cs.overflow === 'visible' && cs.overflowX === 'visible') return;
+          const a = el.getBoundingClientRect(), pa = pai.getBoundingClientRect();
+          const pad = parseFloat(cs.paddingRight) || 0;
+          if (a.width > 0 && a.right > pa.right - pad + 1.5) ruins.push(`${el.className || el.id || el.tagName} (+${Math.round(a.right - (pa.right - pad))}px)`);
+        });
+        return ruins;
+      });
+      L.ok(transbordo.length === 0, `nenhum conteúdo vaza do contêiner${transbordo.length ? ' — ' + transbordo.slice(0, 3).join(' ; ') : ''}`);
       await L.clickSel(page, '#bottomNav .tab[data-screen="gerador"]', { wait: 250 });
       L.ok(await L.activeScreen(page) === 'screen-gerador', 'navegação OK em tela pequena');
       L.ok(await L.visible(page, '#btnMotor'), 'botão do motor visível e clicável');

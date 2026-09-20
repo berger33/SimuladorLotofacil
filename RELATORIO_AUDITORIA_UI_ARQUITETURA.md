@@ -37,6 +37,7 @@
 
 * **171 nós** de texto com fonte entre 8 e 10 px (rótulos, badges, legendas, chips) — abaixo do mínimo confortável em celular.
 * Sem hierarquia: 320 textos em 11–12 px contra 68 em 18 px, sem escala definida.
+* **Vazamento de layout no card de TOP SCORE**: o rótulo "GERAÇÃO ATUAL" e o selo "Em andamento" terminavam **exatamente na borda** do card (folga de 0 px do padding de 20 px), porque o valor `R$ …` usa `white-space:nowrap` e empurrava a coluna direita para fora da caixa de conteúdo em telas de 390 px. Corrigido com `min-width:0`/`flex:0 0 auto`/`gap` e uma faixa dedicada para telas ≤ 385 px (trophy e fontes reduzidos). Hoje: **0 elementos vazando contêiner** em 390 px e 360 px (verificado e agora coberto pela suíte).
 * 237 atributos `style=""` inline, muitos fixando tamanho e cor fora do CSS.
 
 ### 2.3 Interação e animações
@@ -108,14 +109,15 @@
 
 ### 3.6 Testes automatizados (regressão)
 
-A suíte E2E foi ampliada de 42 para **48 cenários / 359 verificações**, agora cobrindo também as novas áreas:
+A suíte E2E foi ampliada de 42 para **48 cenários / 360 verificações**, agora cobrindo também as novas áreas:
 
 * `TEMA` — ciclo escuro/claro/automático, persistência, redesidnho do gráfico e **medição de contraste WCAG AA em runtime nas 9 telas nos 2 temas** (falha o teste se qualquer texto cair abaixo de 4,5:1).
 * `A11Y` — rótulos/roles/tabindex, `aria-live`, zoom liberado, navegação por teclado, `role=switch`, alvos ≥ 44 px, e respeito a `prefers-reduced-motion` (com e sem a preferência).
 * `ROBUS` — 15 casos de `localStorage` corrompido + geração de matriz funcionando depois da recuperação.
 * `UI` — animação de tela, ripple, estado GERANDO + barra + esqueleto + `aria-busy`, destaque da matriz nova e limpeza do estado.
+* `MOB` — ampliado com a checagem de que **nenhum conteúdo vaza do próprio contêiner** em 360 px.
 
-**Resultado final: `TOTAL: 48 | PASSOU: 48 | FALHOU: 0`** (359 verificações ✅, 0 ❌), executado contra o arquivo `file://` final.
+**Resultado final: `TOTAL: 48 | PASSOU: 48 | FALHOU: 0`** (360 verificações ✅, 0 ❌), executado contra o arquivo `file://` final.
 
 ---
 
@@ -163,6 +165,7 @@ Medições com o mesmo navegador, mesmo viewport e mesmos critérios:
 | Pior contraste medido | **1,1:1** | 4,59:1 (escuro) / 4,57:1 (claro) |
 | Textos com fonte < 11 px | **171** | **0** |
 | Controles abaixo de 44 px | **8** | **0** (de 97) |
+| Conteúdo vazando do contêiner (390/360 px) | **1** (card TOP SCORE, folga 0 px) | **0** |
 | Controles sem transição/animação | **72** / 91 | **3** / 97 |
 | Animações (`@keyframes`) | **1** | **9** |
 | `aria-label` / `role` / `tabindex` | **0 / 0 / 0** | **93 / 94 / 84** |
@@ -170,8 +173,8 @@ Medições com o mesmo navegador, mesmo viewport e mesmos critérios:
 | Zoom do usuário | bloqueado | **liberado** |
 | `localStorage` corrompido | **6/15 quebravam** | **15/15 recuperados** |
 | TOP SCORE | podia exibir **R$ 1.234,56 fictício** | sempre o melhor resultado **real** |
-| Cenários de regressão E2E | 42 | **48** (359 verificações, 0 falhas) |
-| Tamanho do app | 323.346 bytes | 354.619 bytes (+9,7%, todo o design system, temas, animações e acessibilidade) |
+| Cenários de regressão E2E | 42 | **48** (360 verificações, 0 falhas) |
+| Tamanho do app | 323.346 bytes | 355.160 bytes (+9,8% — todo o design system, temas, animações e acessibilidade) |
 
 ---
 
@@ -200,7 +203,7 @@ python3 tools/sync_copies.py --check  # falha se divergirem (uso em CI)
 |---|---|
 | `APP_COMPLETO_100_FUNCIONAL.html` | Design system, temas, animações, acessibilidade, robustez de estado, correção do TOP SCORE, alvos de toque |
 | `PREVIEW_100_PORCENTO_IDENTICO.html` · `android_app/kivy_mvp/app_final_100_identico.html` · `android_app/playstore/assets/APP_FINAL_100_IDENTICO.html` · `docs/app_preview.html` | Sincronizadas com o canônico |
-| `tests/e2e/e2e.js` | +6 cenários (TEMA, A11Y, ROBUS, UI) e correções de assert (MOT-01, DASH, CFG-02) |
+| `tests/e2e/e2e.js` | +6 cenários (TEMA, A11Y, ROBUS, UI), verificação de transbordo de layout e correções de assert (MOT-01, DASH, CFG-02) |
 | `tools/sync_copies.py` | **Novo** — sincronização/verificação das 4 cópias |
 | `RELATORIO_AUDITORIA_UI_ARQUITETURA.md` | **Novo** — este relatório |
 | `RELATORIO_TESTES_QA.md` | Atualizado com a suíte de 48 cenários |

@@ -5,7 +5,7 @@ navegando pelo app (Chromium headless via Playwright): clica, arrasta, digita,
 recarrega, instala/limpa dados e confere cada tela contra os dados reais de
 3675 concursos.
 
-Resultado da última execução completa: **48 cenários / 359 verificações / 0 falhas**.
+Resultado da última execução completa: **48 cenários / 360 verificações / 0 falhas**.
 
 ## Como rodar
 

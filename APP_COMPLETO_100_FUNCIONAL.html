@@ -480,6 +480,19 @@ html[data-theme="light"] .top5-sensor-row .num.yellow{color:#FFF7DB}
 .toggle::before{content:'';position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%);border-radius:999px}
 .intel-badge,.mini-tab,.seg-btn,.filtro-chip{min-height:44px}
 .dp::before{top:-5px;bottom:-5px}
+
+/* v10 — acabamento: o card de TOP SCORE não pode estourar o próprio padding */
+.card-topscore{gap:10px}
+.card-topscore .left{flex:1 1 auto;min-width:0}
+.card-topscore .info{min-width:0}
+.card-topscore .info .value{font-size:clamp(17px,5vw,26px);overflow-wrap:anywhere}
+.card-topscore .right{flex:0 0 auto;padding-left:12px;margin-left:0}
+@media (max-width:385px){
+  .card-topscore{padding:16px}
+  .card-topscore .trophy{width:44px;height:44px;font-size:22px}
+  .card-topscore .left{gap:10px}
+  .card-topscore .right .gen{font-size:22px}
+}
 </style>
 </head>
 <body>
