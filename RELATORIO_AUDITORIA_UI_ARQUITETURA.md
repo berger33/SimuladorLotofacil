@@ -73,19 +73,21 @@
 
 **Arquitetura:** `tools/sync_copies.py` (fonte única → sincroniza as 4 cópias), `requirements.txt` reescrito (UTF-8, só deps reais: numpy, requests, matplotlib, customtkinter, pytest; torch opcional), suíte `tests/e2e/` ampliada com 6 cenários novos de TEMA/A11Y/ROBUS/UI.
 
+**Modularização do monólito (depois da auditoria):** o HTML único passou a ser **artefato gerado** — os fontes vivem em `src/` (`template.html`, `css/app.css`, `js/app.js`, `dados/sorteios.json` diffável) e `tools/build.py` remonta o artefato (prova de perda zero: build byte-idêntico, mesmo MD5). As **4 cópias duplicadas saíram do versionamento** (agora `.gitignore` + geradas no build), eliminando o risco de divergência. `python3 tools/build.py --check` garante em CI que artefato ≡ fontes.
+
 ---
 
 ## 4. Backlog recomendado (priorizado)
 
-| P | Item | Esforço |
-|---|------|---------|
-| P1 | Modularizar o monólito (extrair CSS/JS, build leve) mantendo o HTML único como *artefato de distribuição* | M |
-| P1 | Eliminar a duplicação das 5 cópias do versionamento (gerar no build/CI com `tools/sync_copies.py`) | P |
-| P1 | Unificar regras de negócio: hoje existem em Python (`core/`) e JS — escolher uma fonte de verdade | G |
-| P2 | Flutter: completar `pubspec.yaml`/`main.dart` ou remover do repositório até ter paridade | M |
-| P2 | Texto alternativo para os canvas (gráficos) e modo `forced-colors` | P |
-| P3 | CI rodando `tests/e2e` + auditor de contraste a cada push | M |
-| P3 | i18n real (hoje só pt-BR na prática) | G |
+| P | Item | Esforço | Status |
+|---|------|---------|--------|
+| P1 | Modularizar o monólito (fontes em `src/`, HTML único como artefato) | M | ✅ **feito** |
+| P1 | Eliminar as cópias duplicadas do versionamento (geradas no build) | P | ✅ **feito** |
+| P1 | Unificar regras de negócio: hoje existem em Python (`core/`) e JS — escolher uma fonte de verdade | G | pendente |
+| P2 | Flutter: completar `pubspec.yaml`/`main.dart` ou remover do repositório até ter paridade | M | pendente |
+| P2 | Texto alternativo para os canvas (gráficos) e modo `forced-colors` | P | pendente |
+| P3 | CI rodando `tests/e2e` + `tools/build.py --check` + auditor de contraste a cada push | M | pendente |
+| P3 | i18n real (hoje só pt-BR na prática) | G | pendente |
 
 ---
 

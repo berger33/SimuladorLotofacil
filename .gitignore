@@ -12,3 +12,9 @@ release/
 tests/e2e/screenshots/
 tests/e2e/results.json
 tests/e2e/node_modules/
+
+# cópias do app — artefatos gerados por `python3 tools/build.py` (não versionar)
+PREVIEW_100_PORCENTO_IDENTICO.html
+android_app/kivy_mvp/app_final_100_identico.html
+android_app/playstore/assets/APP_FINAL_100_IDENTICO.html
+docs/app_preview.html

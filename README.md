@@ -63,6 +63,29 @@ Para entender profundamente como usar cada chave do sistema e maximizar seus res
 ---
 
 ## 🏗️ Estrutura do Projeto
+
+### App web (produto principal — HTML único)
+- `src/template.html` – casca do app (placeholders `@@CSS@@` / `@@DADOS@@` / `@@APP@@`)
+- `src/css/app.css` – todos os estilos (design system com temas claro/escuro)
+- `src/js/app.js` – toda a lógica do app
+- `src/dados/sorteios.json` – histórico de sorteios (1 por linha, diffável)
+- `APP_COMPLETO_100_FUNCIONAL.html` – **artefato de distribuição gerado** (não editar à mão)
+- `tools/build.py` – gera o HTML único a partir dos fontes e sincroniza as cópias
+- `tools/sync_copies.py` – sincroniza/verifica as cópias (geradas, fora do git)
+- `tests/e2e/` – suíte de regressão (48 cenários, usuário real simulado)
+
+**Fluxo de desenvolvimento do app:**
+```bash
+# 1) edite os fontes em src/ (css, js, dados)
+# 2) gere o artefato:
+python3 tools/build.py
+# 3) valide (CI): falha se o artefato estiver desatualizado em relação aos fontes
+python3 tools/build.py --check
+# 4) rode a regressão completa
+cd tests/e2e && node e2e.js
+```
+
+### Simulador desktop (Python)
 - `main.py` - Ponto de entrada.
 - `ui/interface.py` - O "Cockpit", painel de controle feito em CustomTkinter.
 - `core/engine.py` - O Motor Híbrido, gerencia as threads e as gerações.
