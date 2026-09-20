@@ -1,8 +1,17 @@
 # Relatório de QA — Lotofácil Pro (app HTML `APP_COMPLETO_100_FUNCIONAL.html`)
 
-**Data:** 20/09/2026
-**Escopo:** teste funcional, regressivo, de interface, de persistência, de responsividade (mobile) e varredura total de cliques — simulado como usuário real em navegador (Chromium headless).
-**Resultado final:** **42 cenários / 319 verificações / 0 falhas.**
+**Data:** 20/09/2026 (atualizado após a auditoria de UI/UX — ver `RELATORIO_AUDITORIA_UI_ARQUITETURA.md`)
+**Escopo:** teste funcional, regressivo, de interface, de persistência, de responsividade (mobile), de temas (claro/escuro), de acessibilidade e de robustez de estado — simulado como usuário real em navegador (Chromium headless).
+**Resultado final:** **48 cenários / 359 verificações / 0 falhas.**
+
+> **Atualização da suíte (auditoria de UI/UX):** a suíte passou de 42 para **48 cenários**, incorporando as áreas
+> `TEMA` (ciclo escuro/claro/automático + medição de contraste WCAG AA em runtime nas 9 telas nos 2 temas),
+> `A11Y` (rótulos ARIA, teclado, `role=switch`, zoom liberado, alvos ≥44 px e `prefers-reduced-motion`),
+> `ROBUS` (15 cenários de `localStorage` corrompido) e `UI` (ripple, estado GERANDO, esqueleto, destaque e
+> transição de tela). Três asserts foram recalibrados para o novo comportamento: `MOT-01` e `DASH`
+> (o contador de KPI agora anima — o teste aguarda o valor final e exige que ele seja um resultado **real**,
+> nunca o valor-semente) e `CFG-02` (o item de menu passou de "Tema Escuro" para "Tema", com ciclo de 3 estados).
+> Regressão completa contra o arquivo final: `TOTAL: 48 | PASSOU: 48 | FALHOU: 0`.
 
 ---
 

@@ -5,7 +5,7 @@ navegando pelo app (Chromium headless via Playwright): clica, arrasta, digita,
 recarrega, instala/limpa dados e confere cada tela contra os dados reais de
 3675 concursos.
 
-Resultado da última execução completa: **42 cenários / 319 verificações / 0 falhas**.
+Resultado da última execução completa: **48 cenários / 359 verificações / 0 falhas**.
 
 ## Como rodar
 
@@ -32,6 +32,10 @@ node e2e.js UX       # toast, logs, persistência
 node e2e.js MOB      # mobile 390x844 e 360x640
 node e2e.js FUZZ     # clique em TODOS os botões de TODAS as telas
 node e2e.js JORNADA  # jornada completa do usuário novo
+node e2e.js TEMA     # temas escuro/claro/automático + contraste WCAG AA nas 9 telas
+node e2e.js A11Y     # ARIA, teclado, alvos de toque ≥44px, prefers-reduced-motion
+node e2e.js ROBUS    # localStorage corrompido (15 cenários) sem quebrar o app
+node e2e.js UI       # ripple, estado GERANDO, esqueleto, destaque, transição de tela
 ```
 
 Variáveis de ambiente:

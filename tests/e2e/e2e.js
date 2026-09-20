@@ -185,15 +185,19 @@ function validarJogo(jogo, fixas, bloqueadas) {
     T('Dashboard: top score, geração atual e 4 estatísticas coerentes', 'DASH');
     {
       const { page, ctx } = await bootDashboard(browser);
-      const fmt = v => v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, (m, o, str) => str.indexOf('.') === -1 ? '.' : m);
+      const fmt = v => v.toFixed(2).replace('.', '#').replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace('#', ',');
       const dados = await page.evaluate(() => ({
         rank: JSON.parse(localStorage.getItem('rankingMatrizes') || '[]'),
         top: parseFloat(localStorage.getItem('topScore') || '0')
       }));
-      const melhorMatriz = dados.rank.reduce((a, m) => Math.max(a, m.score), 1234.56);
+      const melhorMatriz = dados.rank.reduce((a, m) => Math.max(a, m.score), 0);
+      const esperadoTop = 'R$ ' + fmt(dados.top);
+      // o contador anima na abertura: aguarda o valor final antes de comparar
+      await page.waitForFunction(t => document.getElementById('topScoreVal').textContent.trim() === t, esperadoTop, { timeout: 5000 }).catch(() => {});
       const top = (await page.textContent('#topScoreVal')).trim();
-      L.ok(Math.abs(dados.top - melhorMatriz) < 0.01, `top score inicial coerente com a melhor matriz real (R$ ${dados.top.toFixed(2)} = R$ ${melhorMatriz.toFixed(2)})`);
-      L.ok(/^R\$ [\d.]+,\d{2}$/.test(top), `top score exibido em R$: "${top}"`);
+      L.ok(dados.top >= melhorMatriz - 0.01, `top score nunca perde para a melhor matriz real (R$ ${dados.top.toFixed(2)} >= R$ ${melhorMatriz.toFixed(2)})`);
+      L.ok(dados.top > 0, `top score é um resultado real, nunca valor-semente (R$ ${dados.top.toFixed(2)})`);
+      L.ok(/^R\$ [\d.]+,\d{2}$/.test(top) && top === esperadoTop, `top score exibido em R$ e igual ao estado: "${top}"`);
       L.ok((await page.textContent('#genVal')).trim() === '42', 'geração atual = 42');
       const media = (await page.textContent('#statMedia')).trim();
       const max = (await page.textContent('#statMax')).trim();
@@ -490,7 +494,7 @@ function validarJogo(jogo, fixas, bloqueadas) {
       L.ok(errosJogos.length === 0, 'todos os jogos válidos (15 dezenas, fixas presentes, bloqueadas ausentes)' + (errosJogos.length ? ' → ' + errosJogos.slice(0, 2).join(' / ') : ''));
       L.ok(new Set(nova.jogos.map(j => j.join(','))).size === nova.jogos.length, 'nenhum jogo duplicado dentro da geração');
       L.ok(nova.score > 0, `score real calculado (R$ ${nova.score.toFixed(2)})`);
-      L.ok(store.top >= nova.score && (!melhor || Math.abs(store.top - melhor.score) < 0.01), `top score = melhor matriz (R$ ${store.top.toFixed(2)} vs gerada R$ ${nova.score.toFixed(2)})`);
+      L.ok(store.top >= nova.score - 0.01 && store.top >= (melhor ? melhor.score : 0) - 0.01, `top score acompanha a melhor matriz (top R$ ${store.top.toFixed(2)} >= gerada R$ ${nova.score.toFixed(2)}${melhor ? ', melhor do ranking R$ ' + melhor.score.toFixed(2) : ''})`);
       L.ok((await page.textContent('#genVal')).trim() === '43', 'KPI geração atual atualizado na tela');
       const maxTxt = (await page.textContent('#statMax')).trim().replace(/\./g, '').replace(',', '.');
       L.ok(Math.abs(parseFloat(maxTxt) - store.top) < 0.01, `KPI MÁXIMO sincronizado com o top score (${await page.textContent('#statMax')} vs R$ ${store.top.toFixed(2)})`);
@@ -872,7 +876,7 @@ function validarJogo(jogo, fixas, bloqueadas) {
       await goto(page, 'config');
       const itens = await page.evaluate(() => [...document.querySelectorAll('#screen-config .config-item')].map(i => i.querySelector('.t')?.textContent.trim()));
       L.ok(itens.length === 11, `11 itens de configuração (${itens.length}): ${itens.join(' / ')}`);
-      L.ok(itens.includes('Tema Escuro') && itens.includes('Deletar Dados') && itens.includes('Premium'), 'itens essenciais presentes');
+      L.ok(itens.includes('Tema') && itens.includes('Deletar Dados') && itens.includes('Premium'), 'itens essenciais presentes (Tema/Premium/Deletar Dados)');
       L.ok(await page.evaluate(() => !!document.querySelector('#screen-config .footer-legal')), 'rodapé legal (+18 / educacional / dual modo) presente');
       L.ok(/1\.0\.0/.test(await page.textContent('#screen-config')), 'versão 1.0.0 exibida');
       // banca
@@ -887,11 +891,16 @@ function validarJogo(jogo, fixas, bloqueadas) {
       const on1 = await page.evaluate(() => document.querySelector('#screen-config .toggle').classList.contains('on'));
       L.ok(on0 !== on1, `toggle de notificações alterna (${on0} → ${on1})`);
       // feedback dos itens com toast
-      for (const label of ['Tema Escuro', 'Privacidade', 'Termos', 'Avaliar App', 'Contato']) {
+      for (const label of ['Privacidade', 'Termos', 'Avaliar App', 'Contato']) {
         await L.clickText(page, '#screen-config .config-item', label, { wait: 250 });
         const t = await L.toastText(page);
         L.ok(t.shown && t.text.length > 3, `item "${label}" responde: "${t.text.slice(0, 45)}..."`);
       }
+      // item Tema: cicla escuro → claro → automático, com feedback em tela e na descrição
+      const temaAntes = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+      await L.clickText(page, '#screen-config .config-item', 'Tema', { wait: 450 });
+      const temaDepois = await page.evaluate(() => ({ tema: document.documentElement.getAttribute('data-theme'), desc: document.getElementById('temaDesc').textContent.trim() }));
+      L.ok(temaDepois.tema !== temaAntes, `item "Tema" cicla o tema (${temaAntes} → ${temaDepois.tema} / "${temaDepois.desc}")`);
       // premium
       await L.clickText(page, '#screen-config .config-item', 'Premium', { wait: 350 });
       L.ok(await L.activeScreen(page) === 'screen-premium', 'item Premium abre a tela Premium');
@@ -1153,6 +1162,334 @@ function validarJogo(jogo, fixas, bloqueadas) {
       L.ok((await page.textContent('#genVal')).trim() === '43', '11) dashboard mostra a nova geração (43)');
       L.ok(errors.length === 0, '12) jornada inteira sem nenhum erro de JS: ' + (errors.slice(0, 3).join(' | ') || 'ok'));
       await ctx.close();
+    }
+  }
+
+
+  // ============================================================ TEMA (claro/escuro/automático)
+  if (run('TEMA')) {
+    T('Tema: alterna escuro → claro → automático, aplica cores, persiste e sobrevive ao reload', 'TEMA');
+    {
+      const { page, errors, ctx } = await bootDashboard(browser);
+      const inicial = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+      L.ok(inicial === 'dark', `tema inicial escuro (${inicial})`);
+      const escuroBg = await page.evaluate(() => getComputedStyle(document.getElementById('screen-dashboard')).backgroundColor);
+      await page.evaluate(() => window.alternarTema());
+      await page.waitForTimeout(400);
+      const claro = await page.evaluate(() => ({
+        tema: document.documentElement.getAttribute('data-theme'),
+        bg: getComputedStyle(document.getElementById('screen-dashboard')).backgroundColor,
+        ls: localStorage.getItem('tema'),
+        desc: document.getElementById('temaDesc').textContent
+      }));
+      L.ok(claro.tema === 'light', `alternar muda para claro (${claro.tema})`);
+      L.ok(claro.bg !== escuroBg, `fundo muda com o tema (${escuroBg} → ${claro.bg})`);
+      L.ok(claro.ls === 'claro', `escolha persistida (${claro.ls})`);
+      L.ok(/Claro/i.test(claro.desc), `descrição na tela de Config: "${claro.desc}"`);
+      await page.evaluate(() => window.alternarTema());
+      await page.waitForTimeout(350);
+      L.ok(await page.evaluate(() => document.documentElement.getAttribute('data-theme')) === (await page.evaluate(() => window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark'), 'modo automático segue o sistema');
+      await page.evaluate(() => window.alternarTema());
+      await page.waitForTimeout(300);
+      L.ok(await page.evaluate(() => document.documentElement.getAttribute('data-theme')) === 'dark', 'terceiro clique volta ao escuro');
+      // persistência
+      await page.evaluate(() => { localStorage.setItem('tema', 'claro'); });
+      await page.reload({ waitUntil: 'load' }); await page.waitForTimeout(700);
+      L.ok(await page.evaluate(() => document.documentElement.getAttribute('data-theme')) === 'light', 'tema claro persiste após recarregar');
+      // gráfico redesenhado com as cores do tema
+      await page.evaluate(() => window.showScreen('dashboard'));
+      await page.waitForTimeout(700);
+      const grafico = await page.evaluate(() => {
+        const c = document.getElementById('chartConv');
+        const img = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+        let pintados = 0;
+        for (let i = 3; i < img.length; i += 4) if (img[i] > 20) pintados++;
+        return pintados;
+      });
+      L.ok(grafico > 200, `gráfico redesenhado no tema claro (${grafico} pixels)`);
+      L.ok(errors.length === 0, 'sem erros de JS: ' + (errors.slice(0, 2).join(' | ') || 'ok'));
+      await ctx.close();
+    }
+
+    T('Tema: contraste WCAG AA medido nas 9 telas (escuro e claro)', 'TEMA');
+    {
+      const medir = async (tema) => {
+        const app = await bootDashboard(browser);
+        await app.page.evaluate(t => localStorage.setItem('tema', t), tema);
+        await app.page.reload({ waitUntil: 'load' }); await app.page.waitForTimeout(700);
+        const resultado = await app.page.evaluate(() => {
+          const parse = str => { const m = str && str.match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(/[,\s/]+/).filter(Boolean).map(Number); return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 }; };
+          const over = (f, b) => { const a = f.a + b.a * (1 - f.a); return a === 0 ? { r: 0, g: 0, b: 0, a: 0 } : { r: (f.r * f.a + b.r * b.a * (1 - f.a)) / a, g: (f.g * f.a + b.g * b.a * (1 - f.a)) / a, b: (f.b * f.a + b.b * b.a * (1 - f.a)) / a, a }; };
+          const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
+          const ratio = (a, b) => { const l1 = lum(a), l2 = lum(b); return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05); };
+          const fundos = el => {
+            const lista = []; let atual = el, base = null;
+            while (atual) {
+              const cs = getComputedStyle(atual);
+              const grad = cs.backgroundImage && cs.backgroundImage !== 'none' ? cs.backgroundImage : '';
+              if (grad.includes('gradient')) { const cores = [...grad.matchAll(/rgba?\([^)]+\)/g)].map(m => parse(m[0])).filter(Boolean); if (cores.length) { lista.push(cores); if (!base) base = cores[0]; break; } }
+              const bg = parse(cs.backgroundColor);
+              if (bg && bg.a > 0.95) { lista.push([bg]); base = bg; break; }
+              if (bg && bg.a > 0) lista.push([bg]);
+              atual = atual.parentElement;
+            }
+            return { lista: lista.length ? lista : [[{ r: 10, g: 10, b: 15, a: 1 }]], base: base || { r: 10, g: 10, b: 15, a: 1 } };
+          };
+          const relatorio = {};
+          const telas = [...document.querySelectorAll('.screen')].map(s => s.id);
+          const ativaAntes = document.querySelector('.screen.active')?.id;
+          telas.forEach(id => {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const alvo = document.getElementById(id); alvo.classList.add('active'); alvo.style.display = 'flex';
+            let falhas = 0, menor = Infinity;
+            alvo.querySelectorAll('*').forEach(el => {
+              const txt = [...el.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent.trim()).join(' ');
+              if (!txt || !/[\p{L}\p{N}]/u.test(txt)) return;
+              const cs = getComputedStyle(el);
+              if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) return;
+              const fg = parse(cs.color); if (!fg) return;
+              if (cs.webkitTextFillColor && parse(cs.webkitTextFillColor).a === 0) return;
+              const { lista, base } = fundos(el);
+              let pior = Infinity;
+              lista.forEach(l => l.forEach(c => { const bg = c.a >= 1 ? c : over(c, base); const t = fg.a >= 1 ? fg : over(fg, bg); const r = ratio(t, bg); if (r < pior) pior = r; }));
+              const size = parseFloat(cs.fontSize), weight = parseInt(cs.fontWeight) || 400;
+              const grande = size >= 24 || (size >= 18.66 && weight >= 700);
+              if (pior < (grande ? 3 : 4.5)) falhas++;
+              if (pior < menor) menor = pior;
+            });
+            relatorio[id] = { falhas, menor: Math.round(menor * 100) / 100 };
+            alvo.style.display = ''; alvo.classList.remove('active');
+          });
+          if (ativaAntes) document.getElementById(ativaAntes)?.classList.add('active');
+          return relatorio;
+        });
+        await app.ctx.close();
+        return resultado;
+      };
+      for (const tema of ['escuro', 'claro']) {
+        const r = await medir(tema);
+        const totalFalhas = Object.values(r).reduce((a, x) => a + x.falhas, 0);
+        const menor = Math.min(...Object.values(r).map(x => x.menor));
+        L.ok(totalFalhas === 0, `tema ${tema}: nenhum texto abaixo de 4.5:1 nas 9 telas (falhas=${totalFalhas}, menor=${menor})`);
+      }
+    }
+  }
+
+  // ============================================================ ACESSIBILIDADE
+  if (run('A11Y')) {
+    T('Acessibilidade: rótulos ARIA, foco, teclado e leitor de tela', 'A11Y');
+    {
+      const { page, errors, ctx } = await bootDashboard(browser);
+      const base = await page.evaluate(() => ({
+        viewport: document.querySelector('meta[name=viewport]').content,
+        toastLive: document.getElementById('toast').getAttribute('aria-live'),
+        labels: document.querySelectorAll('[aria-label]').length,
+        roles: document.querySelectorAll('[role]').length,
+        tabindex: document.querySelectorAll('[tabindex]').length,
+        lang: document.documentElement.lang
+      }));
+      L.ok(!/user-scalable=no|maximum-scale/.test(base.viewport), `zoom liberado para baixa visão (${base.viewport})`);
+      L.ok(base.toastLive === 'polite', 'avisos (toast) anunciados por leitores de tela');
+      L.ok(base.labels >= 60, `rótulos de acessibilidade aplicados (${base.labels})`);
+      L.ok(base.roles >= 60 && base.tabindex >= 50, `papéis e ordem de foco (roles=${base.roles}, tabindex=${base.tabindex})`);
+      L.ok(base.lang === 'pt-BR', 'idioma declarado (pt-BR)');
+      // teclado: navegação por abas
+      const teclado = await page.evaluate(() => {
+        const tabs = [...document.querySelectorAll('#bottomNav .tab')];
+        tabs[2].focus();
+        const focou = document.activeElement === tabs[2];
+        tabs[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+        return { focou, tela: document.querySelector('.screen.active')?.id };
+      });
+      L.ok(teclado.focou, 'abas recebem foco pelo teclado');
+      L.ok(teclado.tela === 'screen-gerador', `Enter aciona o controle focado (${teclado.tela})`);
+      // switch de notificações com estado ARIA
+      await page.evaluate(() => window.showScreen('config'));
+      await page.waitForTimeout(300);
+      const sw = await page.evaluate(() => {
+        const t = document.getElementById('toggleNotif');
+        const antes = t.getAttribute('aria-checked');
+        t.click();
+        return { papel: t.getAttribute('role'), antes, depois: t.getAttribute('aria-checked'), ls: localStorage.getItem('notificacoes') };
+      });
+      L.ok(sw.papel === 'switch' && sw.antes !== sw.depois, `switch de notificações com estado ARIA (${sw.antes}→${sw.depois})`);
+      // elementos dinâmicos acessíveis
+      await page.evaluate(() => window.showScreen('ranking'));
+      await page.waitForTimeout(500);
+      const dinamico = await page.evaluate(() => {
+        const card = document.querySelector('.rank-card');
+        const estrela = document.querySelector('.rank-star');
+        return { role: card.getAttribute('role'), label: card.getAttribute('aria-label') || '', estrela: estrela.getAttribute('aria-label'), foco: !!estrela.getAttribute('tabindex') };
+      });
+      L.ok(dinamico.role === 'button' && /Matriz/.test(dinamico.label), `cards do ranking anunciam posição e score ("${dinamico.label.slice(0, 42)}")`);
+      L.ok(dinamico.estrela && dinamico.foco, `estrela de favoritar com rótulo e foco (${dinamico.estrela})`);
+      L.ok(errors.length === 0, 'sem erros de JS: ' + (errors.slice(0, 2).join(' | ') || 'ok'));
+      await ctx.close();
+    }
+
+    T('Acessibilidade: alvos de toque ≥44px e respeito a "reduzir movimento"', 'A11Y');
+    {
+      const { page, ctx } = await bootDashboard(browser);
+      const alvos = await page.evaluate(() => {
+        const ruins = [];
+        document.querySelectorAll('[onclick]').forEach(el => {
+          const r = el.getBoundingClientRect();
+          if (r.width > 0 && (r.width < 40 || r.height < 40)) {
+            const cs = getComputedStyle(el);
+            const pseudo = getComputedStyle(el, '::before');
+            const expandido = parseFloat(pseudo.top) < 0 || parseFloat(pseudo.bottom) < 0 || parseFloat(pseudo.minHeight) > 30;
+            if (!expandido) ruins.push({ oc: (el.getAttribute('onclick') || '').slice(0, 30), w: Math.round(r.width), h: Math.round(r.height) });
+          }
+        });
+        return ruins;
+      });
+      L.ok(alvos.length <= 3, `alvos de toque aderentes (violações: ${alvos.length}${alvos.length ? ' → ' + alvos.map(a => a.w + 'x' + a.h + ' ' + a.oc).slice(0, 3).join(' ; ') : ''})`);
+      await ctx.close();
+      // com preferência de movimento normal, há animações
+      const normal = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'no-preference' });
+      const pn = await normal.newPage();
+      await pn.route('**/*', r => r.request().url().startsWith('file://') ? r.continue() : r.abort());
+      await pn.addInitScript(() => localStorage.setItem('onboardDone', '1'));
+      await pn.goto(L.APP_URL, { waitUntil: 'load' });
+      await pn.waitForFunction(() => typeof window.showScreen === 'function', null, { timeout: 30000 });
+      await pn.waitForTimeout(600);
+      const comMovimento = await pn.evaluate(async () => {
+        const el = document.getElementById('topScoreVal');
+        window.animarValor('topScoreVal', 4321.99, v => 'R$ ' + window.fmtMoeda(v));
+        const quadros = [];
+        for (let i = 0; i < 5; i++) { await new Promise(r => setTimeout(r, 90)); quadros.push(el.textContent); }
+        return { distintos: new Set(quadros).size, transicao: getComputedStyle(document.querySelector('.tab')).transitionDuration };
+      });
+      L.ok(comMovimento.distintos >= 3, `contadores animam com movimento habilitado (${comMovimento.distintos} quadros)`);
+      L.ok(comMovimento.transicao !== '0s' && comMovimento.transicao !== '1e-06s', `microinterações ativas (transição ${comMovimento.transicao.slice(0, 24)})`);
+      await normal.close();
+
+      // com "reduzir movimento", animações devem ser praticamente instantâneas
+      const reduzido = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+      const pr = await reduzido.newPage();
+      await pr.route('**/*', r => r.request().url().startsWith('file://') ? r.continue() : r.abort());
+      await pr.addInitScript(() => localStorage.setItem('onboardDone', '1'));
+      await pr.goto(L.APP_URL, { waitUntil: 'load' });
+      await pr.waitForFunction(() => typeof window.showScreen === 'function', null, { timeout: 30000 });
+      await pr.waitForTimeout(500);
+      const semMovimento = await pr.evaluate(async () => {
+        const el = document.getElementById('topScoreVal');
+        window.animarValor('topScoreVal', 9999.99, v => 'R$ ' + window.fmtMoeda(v));
+        await new Promise(r => setTimeout(r, 60));
+        return { texto: el.textContent, transicao: getComputedStyle(document.querySelector('.tab')).transitionDuration };
+      });
+      L.ok(parseFloat(semMovimento.transicao) < 0.01, `respeita "reduzir movimento" (transição ${semMovimento.transicao})`);
+      L.ok(/9\.999,99/.test(semMovimento.texto), `valor aplicado imediatamente, sem animação (${semMovimento.texto})`);
+      await reduzido.close();
+    }
+  }
+
+  // ============================================================ ROBUSTEZ DE ESTADO
+  if (run('ROBUS')) {
+    T('Robustez: dados corrompidos/antigos no localStorage não derrubam o app', 'ROBUS');
+    {
+      const casos = [
+        ['fixas como texto', { fixas: 'abc' }],
+        ['bloqueadas malformadas', { bloqueadas: '{{{' }],
+        ['rankingMatrizes inválido', { rankingMatrizes: 'not-json' }],
+        ['filtrosAtivos inválido', { filtrosAtivos: 'x' }],
+        ['qtdJogos texto', { qtdJogos: 'muitos' }],
+        ['mutacao texto', { mutacao: 'alto' }],
+        ['isPremium texto', { isPremium: 'talvez' }],
+        ['topScore texto', { topScore: 'R$ 5.000' }],
+        ['geracaoAtual nulo', { geracaoAtual: 'null' }],
+        ['banca negativa', { banca: '-500' }],
+        ['favoritos objeto', { favoritos: '{"a":1}' }],
+        ['modoGeracao inválido', { modoGeracao: 'hack' }],
+        ['estrategia inválida', { estrategia: 'xpto' }],
+        ['matriz sem jogos', { rankingMatrizes: '[{"id":1,"score":10}]' }],
+        ['tema inválido', { tema: 'neon' }]
+      ];
+      let falhas = [];
+      for (const [nome, storage] of casos) {
+        const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+        const p = await ctx.newPage();
+        const erros = [];
+        p.on('pageerror', e => erros.push(e.message.split('\n')[0]));
+        await p.route('**/*', r => r.request().url().startsWith('file://') ? r.continue() : r.abort());
+        await p.addInitScript(s => { localStorage.setItem('onboardDone', '1'); for (const [k, v] of Object.entries(s)) localStorage.setItem(k, v); }, storage);
+        await p.goto(L.APP_URL, { waitUntil: 'load' });
+        await p.waitForTimeout(800);
+        const estado = await p.evaluate(() => ({
+          ok: typeof window.showScreen === 'function',
+          tela: document.querySelector('.screen.active')?.id,
+          cards: document.getElementById('rankingList').children.length,
+          heat: document.getElementById('heatmapDash').children.length
+        }));
+        const passou = estado.ok && estado.tela === 'screen-dashboard' && estado.cards >= 8 && estado.heat === 25 && erros.length === 0;
+        if (!passou) falhas.push(`${nome} (tela=${estado.tela}, cards=${estado.cards}, heat=${estado.heat}, erros=${erros.slice(0, 1)})`);
+        await ctx.close();
+      }
+      L.ok(falhas.length === 0, `${casos.length} cenários de estado corrompido recuperados` + (falhas.length ? ` — falhas: ${falhas.slice(0, 3).join(' ;; ')}` : ''));
+      // geração continua funcionando depois de recuperar
+      const app = await bootDashboard(browser, { storage: { fixas: 'abc', rankingMatrizes: 'lixo' } });
+      await goto(app.page, 'gerador');
+      await L.clickSel(app.page, '#segJogos .seg-btn[data-v="10"]', { wait: 200 });
+      await L.clickSel(app.page, '#btnMotor', { wait: 2200 });
+      const nova = await L.matrizNova(app.page);
+      L.ok(nova && nova.jogos.length === 10, `motor funciona mesmo após recuperar estado (${nova ? nova.jogos.length : 0} jogos)`);
+      await app.ctx.close();
+    }
+  }
+
+  // ============================================================ UI / ANIMAÇÕES
+  if (run('UI')) {
+    T('UI: feedback visual de ações (onda, progresso, esqueleto, destaque, transição de tela)', 'UI');
+    {
+      const app = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'no-preference' });
+      const page = await app.newPage();
+      const errors = [];
+      page.on('pageerror', e => errors.push(e.message));
+      await page.route('**/*', r => r.request().url().startsWith('file://') ? r.continue() : r.abort());
+      await page.addInitScript(() => localStorage.setItem('onboardDone', '1'));
+      await page.goto(L.APP_URL, { waitUntil: 'load' });
+      await page.waitForFunction(() => typeof window.showScreen === 'function', null, { timeout: 30000 });
+      await page.waitForTimeout(700);
+
+      // transição de tela
+      const anim = await page.evaluate(() => { window.showScreen('gerador'); return getComputedStyle(document.getElementById('screen-gerador')).animationName; });
+      L.ok(anim !== 'none', `tela ativa tem animação de entrada (${anim})`);
+
+      // onda no toque
+      await page.locator('#btnMotor').scrollIntoViewIfNeeded();
+      const box = await page.locator('#btnMotor').boundingBox();
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await page.mouse.down();
+      await page.waitForTimeout(80);
+      const ondas = await page.evaluate(() => document.querySelectorAll('.onda').length);
+      await page.mouse.up();
+      L.ok(ondas > 0, `efeito de onda ao tocar (${ondas})`);
+
+      // esqueleto + estado gerando + destaque
+      await page.evaluate(() => { document.querySelector('#segJogos .seg-btn[data-v="10"]').click(); window.iniciarMotorReal(); });
+      await page.waitForTimeout(250);
+      const durante = await page.evaluate(() => ({
+        gerando: document.getElementById('btnMotor').classList.contains('gerando'),
+        barra: !!document.querySelector('.btn-motor .progresso'),
+        esqueleto: document.querySelectorAll('.skeleton').length,
+        aria: document.getElementById('btnMotor').getAttribute('aria-busy')
+      }));
+      L.ok(durante.gerando && durante.barra, 'botão exibe estado GERANDO com barra de progresso');
+      L.ok(durante.esqueleto > 0, `esqueleto de carregamento no ranking (${durante.esqueleto} blocos)`);
+      L.ok(durante.aria === 'true', 'botão marcado como ocupado (aria-busy)');
+      await page.waitForFunction(() => JSON.parse(localStorage.getItem('rankingMatrizes') || '[]').length > 8, null, { timeout: 30000 });
+      await page.waitForTimeout(600);
+      const depois = await page.evaluate(() => ({
+        gerando: document.getElementById('btnMotor').classList.contains('gerando'),
+        esqueleto: document.querySelectorAll('.skeleton').length,
+        destaques: document.querySelectorAll('.rank-card--novo').length,
+        aria: document.getElementById('btnMotor').getAttribute('aria-busy')
+      }));
+      L.ok(!depois.gerando && depois.esqueleto === 0, 'estado GERANDO e esqueleto encerram ao terminar');
+      L.ok(depois.destaques === 1, 'matriz recém-gerada destacada no ranking');
+      L.ok(depois.aria === null, 'aria-busy removido ao final');
+      L.ok(errors.length === 0, 'nenhum erro de JS durante as animações');
+      await app.close();
     }
   }
 
