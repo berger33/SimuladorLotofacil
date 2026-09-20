@@ -29,8 +29,10 @@ avançava**, a tela de IA **inalcançável**, abas do ranking e botões "favorit
 de **desempenho grave** (o app levava mais de 2 minutos para ficar utilizável; agora
 fica pronto em ~0,23 s).
 
-Todos foram corrigidos, o app foi testado de ponta a ponta e está com **42 cenários
-automatizados aprovados**, disponíveis em `tests/e2e/` para rodar a qualquer momento.
+Todos foram corrigidos, o app foi testado de ponta a ponta e está com **48 cenários
+automatizados aprovados (100%)**, disponíveis em `tests/e2e/` para rodar a qualquer momento.
+Após a rodada de UI/UX (design system, tema claro/escuro, acessibilidade e robustez),
+a regressão completa foi reexecutada contra o arquivo final: **48 | PASSOU: 48 | FALHOU: 0**.
 
 ---
 
